@@ -1,0 +1,292 @@
+[
+    {
+        "id": 1,
+        "category": "Graphic Design",
+        "imageSrc": "GD.jpg",
+        "courses": [
+            {
+                "id": 1,
+                "title": "Basic Graphics Design",
+                "imageSrc": "courseCard1.png",
+                "duration": "30 Hours",
+                "rating": 4.3,
+                "reviews": 498,
+                "students": 1985,
+                "originalPrice": "৳15,000",
+                "discount": 50,
+                "discountedPrice": "৳7,500",
+                "detail": "এই কোর্সটি গ্রাফিক্স ডিজাইনের একদম শুরু থেকে শেখায়। Adobe Photoshop, Illustrator-এর বেসিক ব্যবহার, কালার থিওরি, টাইপোগ্রাফি, লোগো ডিজাইন, পোস্টার ও সোশ্যাল মিডিয়া গ্রাফিক্স তৈরি শিখবেন। লাইভ প্রজেক্ট ও অ্যাসাইনমেন্টের মাধ্যমে হাতে-কলমে শেখানো হয়। শুরুতে কোনো অভিজ্ঞতা না থাকলেও যারা শিখতে চান তাদের জন্য আদর্শ।"
+            },
+            {
+                "id": 2,
+                "title": "Master of Graphics Design",
+                "imageSrc": "courseCard2.png",
+                "duration": "90 Hours",
+                "rating": 4,
+                "reviews": 498,
+                "students": 1985,
+                "originalPrice": "৳30,000",
+                "discount": 50,
+                "discountedPrice": "৳15,000",
+                "detail": "এটি একটি অ্যাডভান্সড লেভেলের কোর্স। Adobe Photoshop, Illustrator, InDesign-এর এক্সপার্ট লেভেল ব্যবহার, ব্র্যান্ডিং, UI/UX ডিজাইনের বেসিক, মোশন গ্রাফিক্সের ইন্ট্রোডাকশন, ক্লায়েন্ট ম্যানেজমেন্ট এবং পোর্টফোলিও তৈরি শেখানো হয়। রিয়েল-ওয়ার্ল্ড প্রজেক্ট ও ফ্রিল্যান্সিং গাইডলাইনসহ সম্পূর্ণ প্রফেশনাল ট্রেনিং।"
+            },
+            {
+                "id": 3,
+                "title": "Professional Graphics Design",
+                "imageSrc": "courseCard3.png",
+                "duration": "60 Hours",
+                "rating": 3,
+                "reviews": 498,
+                "students": 1985,
+                "originalPrice": "৳20,000",
+                "discount": 50,
+                "discountedPrice": "৳10,000",
+                "detail": "মিড-লেভেলের এই কোর্সে বেসিক থেকে অ্যাডভান্সড গ্রাফিক্স ডিজাইন শেখানো হয়। ব্যানার, ব্রোশিওর, বিজনেস কার্ড, সোশ্যাল মিডিয়া অ্যাড ক্রিয়েটিভ, ভেক্টর আর্ট, মকআপ তৈরি ইত্যাদি। প্রতিটি টপিকে লাইভ প্র্যাকটিস ও ফিডব্যাক দেওয়া হয়। ফ্রিল্যান্সার ও চাকরিপ্রার্থীদের জন্য উপযোগী।"
+            }
+        ]
+    },
+    {
+        "id": 2,
+        "category": "Web design & development",
+        "imageSrc": "WD.png",
+        "courses": [
+            {
+                "id": 4,
+                "title": "Professional Web Design & Development",
+                "imageSrc": "courseCard4.png",
+                "duration": "80 Hours",
+                "rating": 4,
+                "reviews": 498,
+                "students": 1985,
+                "originalPrice": "৳60,000",
+                "discount": 50,
+                "discountedPrice": "৳30,000",
+                "detail": "এই কোর্সে HTML5, CSS3, Bootstrap, JavaScript, Responsive Design, WordPress এবং বেসিক PHP শেখানো হয়। লাইভ প্রজেক্ট হিসেবে একটি সম্পূর্ণ রেসপন্সিভ ওয়েবসাইট তৈরি করবেন। SEO বেসিক, হোস্টিং ও ডোমেইন সেটআপও শেখানো হয়। শুরু থেকে প্রফেশনাল লেভেল পর্যন্ত।"
+            },
+            {
+                "id": 5,
+                "title": "Front-end Development with React",
+                "imageSrc": "courseCard5.png",
+                "duration": "60 Hours",
+                "rating": 3,
+                "reviews": 498,
+                "students": 1985,
+                "originalPrice": "৳40,000",
+                "discount": 50,
+                "discountedPrice": "৳20,000",
+                "detail": "এই কোর্সে React.js-এর মাধ্যমে আধুনিক ফ্রন্ট-এন্ড ডেভেলপমেন্ট শেখানো হয়। Components, Hooks, State Management (Redux/Context), Routing (React Router), API Integration, Responsive Design সহ একাধিক রিয়েল-টাইম প্রজেক্ট তৈরি করা হবে। জব-রেডি ফ্রন্ট-এন্ড ডেভেলপার হওয়ার জন্য পারফেক্ট।"
+            }
+        ]
+    },
+    {
+        "id": 3,
+        "category": "Office Course",
+        "imageSrc": "OC.png",
+        "courses": [
+            {
+                "id": 6,
+                "title": "Advanced Excel",
+                "imageSrc": "courseCard6.png",
+                "duration": "20 Hours",
+                "rating": 4,
+                "reviews": 498,
+                "students": 1985,
+                "originalPrice": "৳6,000",
+                "discount": 50,
+                "discountedPrice": "৳3,000",
+                "detail": "এই কোর্সে Excel-এর অ্যাডভান্সড ফিচার শেখানো হয়: Pivot Table, VLOOKUP, INDEX-MATCH, Conditional Formatting, Data Validation, Macros, Dashboard তৈরি ইত্যাদি। অফিস জব ও ডেটা অ্যানালাইসিসের জন্য খুবই গুরুত্বপূর্ণ।"
+            },
+            {
+                "id": 7,
+                "title": "Professional Office Management",
+                "imageSrc": "courseCard7.png",
+                "duration": "60 Hours",
+                "rating": 4,
+                "reviews": 498,
+                "students": 1985,
+                "originalPrice": "৳10,000",
+                "discount": 50,
+                "discountedPrice": "৳5,000",
+                "detail": "MS Office Suite (Word, Excel, PowerPoint), Email Management, Scheduling, File Management, Office Communication, Basic Accounting এবং প্রফেশনাল স্কিল ডেভেলপমেন্ট শেখানো হয়। অফিস অ্যাডমিন ও সাপোর্ট স্টাফদের জন্য আদর্শ।"
+            },
+            {
+                "id": 8,
+                "title": "Certificate in Computer Science & Application",
+                "imageSrc": "courseCard8.png",
+                "duration": "40 Hours",
+                "rating": 4,
+                "reviews": 498,
+                "students": 1985,
+                "originalPrice": "৳6,000",
+                "discount": 50,
+                "discountedPrice": "৳3,000",
+                "detail": "কম্পিউটারের বেসিক থেকে MS Office, ইন্টারনেট, ইমেইল, ফাইল ম্যানেজমেন্ট, বেসিক প্রোগ্রামিং কনসেপ্ট এবং সার্টিফিকেট প্রদান করা হয়। চাকরির জন্য বেসিক কম্পিউটার স্কিল প্রয়োজন এমন সবার জন্য।"
+            }
+        ]
+    },
+    {
+        "id": 4,
+        "category": "Video Editing",
+        "imageSrc": "VE.jpg",
+        "courses": [
+            {
+                "id": 9,
+                "title": "Professional Video Editing",
+                "imageSrc": "courseCard9.png",
+                "duration": "50 Hours",
+                "rating": 4,
+                "reviews": 498,
+                "students": 1985,
+                "originalPrice": "৳40,000",
+                "discount": 50,
+                "discountedPrice": "৳20,000",
+                "detail": "Adobe Premiere Pro, After Effects, DaVinci Resolve-এর মাধ্যমে প্রফেশনাল ভিডিও এডিটিং শেখানো হয়। কাটিং, ট্রানজিশন, কালার গ্রেডিং, মোশন গ্রাফিক্স, সাউন্ড ডিজাইন, YouTube/ফ্রিল্যান্স প্রজেক্ট তৈরি করা হবে।"
+            },
+            {
+                "id": 10,
+                "title": "Basic Video Editing",
+                "imageSrc": "courseCard10.png",
+                "duration": "20 Hours",
+                "rating": 2,
+                "reviews": 298,
+                "students": 1985,
+                "originalPrice": "৳15,000",
+                "discount": 50,
+                "discountedPrice": "৳7,500",
+                "detail": "কম্পিউটারের বেসিক থেকে MS Office, ইন্টারনেট, ইমেইল, ফাইল ম্যানেজমেন্ট, বেসিক প্রোগ্রামিং কনসেপ্ট এবং সার্টিফিকেট প্রদান করা হয়। চাকরির জন্য বেসিক কম্পিউটার স্কিল প্রয়োজন এমন সবার জন্য।"
+            },
+            {
+                "id": 11,
+                "title": "Basic Video Editing",
+                "imageSrc": "courseCard11.png",
+                "duration": "30 Hours",
+                "rating": 4,
+                "reviews": 498,
+                "students": 1985,
+                "originalPrice": "৳15,000",
+                "discount": 50,
+                "discountedPrice": "৳7,500",
+                "detail": "কম্পিউটারের বেসিক থেকে MS Office, ইন্টারনেট, ইমেইল, ফাইল ম্যানেজমেন্ট, বেসিক প্রোগ্রামিং কনসেপ্ট এবং সার্টিফিকেট প্রদান করা হয়। চাকরির জন্য বেসিক কম্পিউটার স্কিল প্রয়োজন এমন সবার জন্য।"
+            }
+        ]
+    },
+    {
+        "id": 5,
+        "category": "Hardware",
+        "imageSrc": "HW.png",
+        "courses": [
+            {
+                "id": 12,
+                "title": "Basic Hardware",
+                "imageSrc": "courseCard12.png",
+                "duration": "30 Hours",
+                "rating": 4,
+                "reviews": 498,
+                "students": 1985,
+                "originalPrice": "৳15,000",
+                "discount": 50,
+                "discountedPrice": "৳7,500",
+                "detail": "কম্পিউটার হার্ডওয়্যারের বেসিক কনসেপ্ট, CPU, RAM, Motherboard, Storage Device, Power Supply, Assembling, Troubleshooting, Software Installation শেখানো হয়। কম্পিউটার রিপেয়ারিংয়ের শুরু করতে চাইলে আদর্শ।"
+            }
+        ]
+    },
+    {
+        "id": 6,
+        "category": "Professional Digital Marketing",
+        "imageSrc": "PDM.jpg",
+        "courses": [
+            {
+                "id": 13,
+                "title": "Basic Professional Digital Marketing",
+                "imageSrc": "courseCard13.png",
+                "duration": "30 Hours",
+                "rating": 4,
+                "reviews": 498,
+                "students": 1985,
+                "originalPrice": "৳15,000",
+                "discount": 50,
+                "discountedPrice": "৳7,500",
+                "detail": "Facebook Ads, Google Ads, SEO বেসিক, Content Marketing, Social Media Management, Email Marketing, Analytics শেখানো হয়। ফ্রিল্যান্স ও জবের জন্য প্রয়োজনীয় সবকিছু কভার করা হয়।"
+            },
+            {
+                "id": 14,
+                "title": "Professional Search Engine Optimization",
+                "imageSrc": "courseCard14.png",
+                "duration": "40 Hours",
+                "rating": 4.5,
+                "reviews": 498,
+                "students": 1985,
+                "originalPrice": "৳15,000",
+                "discount": 50,
+                "discountedPrice": "৳7,500",
+                "detail": "Facebook Ads, Google Ads, SEO বেসিক, Content Marketing, Social Media Management, Email Marketing, Analytics শেখানো হয়। ফ্রিল্যান্স ও জবের জন্য প্রয়োজনীয় সবকিছু কভার করা হয়।"
+            },
+            {
+                "id": 15,
+                "title": "Professional Social Media Marketing",
+                "imageSrc": "courseCard15.png",
+                "duration": "40 Hours",
+                "rating": 4.5,
+                "reviews": 498,
+                "students": 1985,
+                "originalPrice": "৳15,000",
+                "discount": 50,
+                "discountedPrice": "৳7,500",
+                "detail": "Facebook Ads, Google Ads, SEO বেসিক, Content Marketing, Social Media Management, Email Marketing, Analytics শেখানো হয়। ফ্রিল্যান্স ও জবের জন্য প্রয়োজনীয় সবকিছু কভার করা হয়।"
+            }
+        ]
+    },
+    {
+        "id": 7,
+        "category": "Professional Freelancing & Outsourcing",
+        "imageSrc": "PF.jpg",
+        "courses": [
+            {
+                "id": 16,
+                "title": "Basic Office Course",
+                "imageSrc": "courseCard16.png",
+                "duration": "30 Hours",
+                "rating": 4,
+                "reviews": 498,
+                "students": 1985,
+                "originalPrice": "৳15,000",
+                "discount": 50,
+                "discountedPrice": "৳7,500",
+                "detail": "ফ্রিল্যান্সিংয়ের বেসিক, Upwork/Fiverr প্রোফাইল তৈরি, Proposal Writing, Client Communication, Time Management, Payment Method সেটআপ শেখানো হয়। ফ্রিল্যান্সিং শুরু করতে চাইলে এটি আদর্শ কোর্স।"
+            },
+            {
+                "id": 17,
+                "title": "Professional Freelancing & Outsourcing",
+                "imageSrc": "courseCard17.png",
+                "duration": "40 Hours",
+                "rating": 4.5,
+                "reviews": 498,
+                "students": 1985,
+                "originalPrice": "৳15,000",
+                "discount": 50,
+                "discountedPrice": "৳7,500",
+                "detail": "ফ্রিল্যান্সিংয়ের বেসিক, Upwork/Fiverr প্রোফাইল তৈরি, Proposal Writing, Client Communication, Time Management, Payment Method সেটআপ শেখানো হয়। ফ্রিল্যান্সিং শুরু করতে চাইলে এটি আদর্শ কোর্স।"
+            }
+        ]
+    },
+    {
+        "id": 8,
+        "category": "Software",
+        "imageSrc": "SW.png",
+        "courses": [
+            {
+                "id": 18,
+                "title": "Software Create & Sell",
+                "imageSrc": "courseCard18.png",
+                "duration": "40 Hours",
+                "rating": 4.5,
+                "reviews": 498,
+                "students": 1985,
+                "originalPrice": "৳15,000",
+                "discount": 50,
+                "discountedPrice": "৳7,500",
+                "detail": "MS Word, Excel, PowerPoint-এর বেসিক থেকে মিড-লেভেল ব্যবহার, ইন্টারনেট ব্রাউজিং, ইমেইল ম্যানেজমেন্ট শেখানো হয়। অফিস জবের জন্য প্রয়োজনীয় কম্পিউটার স্কিল।"
+            }
+        ]
+    }
+]
