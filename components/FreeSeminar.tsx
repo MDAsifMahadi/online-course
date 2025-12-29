@@ -13,6 +13,16 @@ interface SeminarCardProps {
 }
 
 const SeminarCard = ({ title, date, description, onJoinClick }: SeminarCardProps) => {
+  const formatDateTime = (date: string | Date) =>
+    new Date(date).toLocaleString("en-US", {
+      month: "short",
+      day: "2-digit",
+      year: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    });
+  const formatedDate = formatDateTime(date);
   return (
     <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200 hover:shadow-lg transition-shadow duration-300">
       <div className="flex items-start justify-between gap-4">
@@ -20,7 +30,7 @@ const SeminarCard = ({ title, date, description, onJoinClick }: SeminarCardProps
           {/* Date */}
           <div className="flex items-center gap-2 text-purple-600 mb-2">
             <Calendar size={18} />
-            <span className="text-sm font-semibold">{date}</span>
+            <span className="text-sm font-semibold">{formatedDate}</span>
           </div>
 
           {/* Title */}
@@ -49,29 +59,17 @@ const SeminarCard = ({ title, date, description, onJoinClick }: SeminarCardProps
 const FreeSeminar = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedSeminar, setSelectedSeminar] = useState("");
-  // const [seminars, setSeminar] = useState([]);
+  const [seminars, setSeminar] = useState([]);
 
-  // useEffect(() => {
-  //   const fetchSeminar = async () => {
-  //     const response = await fetch("/api/seminars");
-  //     const data = await response.json();
-  //     setSeminar(data.seminars);
-  //   };
-  //   fetchSeminar();
-  // }, []);
+  useEffect(() => {
+    const fetchSeminar = async () => {
+      const response = await fetch("/api/seminars");
+      const data = await response.json();
+      setSeminar(data.data[0].seminars);
+    };
+    fetchSeminar();
+  }, []);
 
-  const seminars = [
-    {
-      title: "Graphics Design",
-      date: "23rd March",
-      description: "Learn the fundamentals of graphic design and create stunning visuals for your projects.",
-    },
-    {
-      title: "Freelancing",
-      date: "29th March",
-      description: "Master the art of freelancing and start your journey as a successful freelancer.",
-    },
-  ];
 
   const handleJoinClick = (seminarTitle: string) => {
     setSelectedSeminar(seminarTitle);

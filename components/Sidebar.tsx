@@ -18,6 +18,7 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
     { href: "/about", label: "About Us" },
     { href: "/courses", label: "Courses" },
     { href: "/results", label: "Results" },
+    { href: "/certification", label: "Certification" },
     { href: "/blog", label: "Blog" },
     { href: "/contact", label: "Contact Us" },
   ];

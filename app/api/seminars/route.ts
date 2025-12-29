@@ -1,0 +1,37 @@
+export const runtime = "nodejs";
+import { NextRequest, NextResponse } from "next/server";
+import { Seminar } from "@/app/lib/models/schema";
+import connectToDatabase from "@/app/lib/mongodb";
+
+
+export async function GET(request: NextRequest) {
+    try {
+        await connectToDatabase();
+        const seminars = await Seminar.find();
+        return NextResponse.json({ success: true, data : seminars }, { status: 200 });
+    } catch (error) {
+        console.log(error);
+        return NextResponse.json({ success: false, error: error }, { status: 500 });
+    }
+}
+
+export async function POST(request: NextRequest) {
+    try {
+        await connectToDatabase();
+        const body = await request.json();
+        const { seminars } = body;
+        const { searchParams } = new URL(request.url);
+        const id = searchParams.get("id");
+        const seminar = await Seminar.findById(id);
+        if (seminar._id) {
+            const res = await Seminar.findByIdAndUpdate(seminar._id, {seminars});
+            return NextResponse.json({ success: true, seminar: res }, { status: 200 });
+        }
+        const newSeminar = new Seminar({ seminars });
+        await newSeminar.save();
+        return NextResponse.json({ success: true, seminar: newSeminar }, { status: 200 });
+    } catch (error) {
+        console.log(error);
+        return NextResponse.json({ success: false, error: error }, { status: 500 });
+    }
+}

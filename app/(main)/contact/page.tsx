@@ -1,6 +1,28 @@
+'use client';
 import { MapPin, Phone, Mail, Send } from "lucide-react";
-
+import { useState } from "react";
 export default function ContactPage() {
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [message, setMessage] = useState('');
+    const [loading, setLoading] = useState(false);
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        setLoading(true);
+        const response = await fetch('/api/messages', {
+            method: 'POST',
+            body: JSON.stringify({ name, email, message }),
+        });
+        if (response.ok && response.status === 200) {
+            setName('');
+            setEmail('');
+            setMessage('');
+            alert('Message sent successfully');
+        } else {
+            alert('Failed to send message');
+        }
+        setLoading(false);
+    };
     return (
         <div className="min-h-screen bg-gray-50 pb-20">
             {/* Header */}
@@ -68,12 +90,14 @@ export default function ContactPage() {
                     {/* Contact Form */}
                     <div className="bg-white p-8 rounded-xl shadow-md">
                         <h2 className="text-2xl font-bold text-gray-800 mb-6">Send us a Message</h2>
-                        <form className="space-y-6">
+                        <form className="space-y-6" onSubmit={handleSubmit}>
                             <div>
                                 <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
                                 <input
                                     type="text"
                                     id="name"
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
                                     className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
                                     placeholder="Your Name"
                                 />
@@ -83,6 +107,8 @@ export default function ContactPage() {
                                 <input
                                     type="email"
                                     id="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
                                     className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
                                     placeholder="your@email.com"
                                 />
@@ -91,13 +117,16 @@ export default function ContactPage() {
                                 <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">Message</label>
                                 <textarea
                                     id="message"
+                                    value={message}
+                                    onChange={(e) => setMessage(e.target.value)}
                                     rows={4}
                                     className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition resize-none"
                                     placeholder="How can we help you?"
                                 ></textarea>
                             </div>
                             <button
-                                type="button"
+                                type="submit"
+                                disabled={!name || !email || !message || loading}
                                 className="w-full bg-purple-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-purple-700 transition flex items-center justify-center gap-2"
                             >
                                 <Send size={18} />

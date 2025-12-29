@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { MessageSquare, Trash2, AlertCircle, CheckCircle2, Mail, Calendar, User } from 'lucide-react';
 
 interface Message {
-    id: number;
+    _id: string;
     name: string;
     email: string;
     message: string;
@@ -33,22 +33,22 @@ export default function MessagesPage() {
         try {
             const response = await fetch('/api/messages');
             const data = await response.json();
-
             if (data.success) {
                 setMessages(data.messages);
             }
         } catch (error) {
             console.error('Error fetching messages:', error);
+            setAlertMessage({ type: 'error', text: 'মেসেজ লোড করতে সমস্যা হয়েছে' });
         } finally {
             setLoading(false);
         }
     };
 
-    const handleDelete = async (id: number) => {
+    const handleDelete = async (id: string) => {
         if (!confirm('আপনি কি এই মেসেজ ডিলিট করতে চান?')) return;
 
         try {
-            const response = await fetch(`/api/messages?id=${id}`, {
+            const response = await fetch(`/api/messages?_id=${id}`, {
                 method: 'DELETE',
             });
 
@@ -137,7 +137,7 @@ export default function MessagesPage() {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {messages.map((msg) => (
                         <div
-                            key={msg.id}
+                            key={msg._id}
                             className="bg-white rounded-xl shadow-md p-6 border border-gray-100 hover:shadow-lg transition-shadow"
                         >
                             {/* Header */}
@@ -171,7 +171,7 @@ export default function MessagesPage() {
 
                             {/* Delete Button */}
                             <button
-                                onClick={() => handleDelete(msg.id)}
+                                onClick={() => handleDelete(msg._id)}
                                 className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors font-medium"
                             >
                                 <Trash2 size={18} />

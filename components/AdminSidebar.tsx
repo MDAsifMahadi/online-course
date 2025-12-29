@@ -9,7 +9,8 @@ import {
     Key,
     LogOut,
     Menu,
-    X
+    X,
+    Award
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -42,6 +43,12 @@ const AdminSidebar = ({ onLogout }: AdminSidebarProps) => {
             label: "Student Results",
             href: "/w-admin/results",
             description: "Add & manage results"
+        },
+        {
+            icon: Award,
+            label: "Certificates",
+            href: "/w-admin/certification",
+            description: "Add & manage certificates"
         },
         {
             icon: Users,

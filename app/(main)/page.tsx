@@ -4,8 +4,11 @@ import OurCourses from "@/components/OurCourses";
 import FreeSeminar from "@/components/FreeSeminar";
 import OurFeatures from "@/components/OurFeatures";
 import Testimonials from "@/components/Testimonials";
+import connectToDatabase from "@/app/lib/mongodb";
 
-const Home = () => {
+const Home = async () => {
+  await connectToDatabase();
+
   return (
     <div>
       <Hero />

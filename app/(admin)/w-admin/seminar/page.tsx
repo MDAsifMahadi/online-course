@@ -17,7 +17,7 @@ export default function SeminarPage() {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
-
+    const [id, setId] = useState("");
     const [seminars, setSeminars] = useState<Seminar[]>([
         { title: '', description: '', date: '' },
         { title: '', description: '', date: '' },
@@ -32,52 +32,26 @@ export default function SeminarPage() {
             fetchSeminars();
         }
 
-        const getData = async () => {
-            const response = await fetch('/api/seminars');
-            const data = await response.json();
-            if (data.success && data.seminars.length > 0) {
-                const loadedSeminars = data.seminars.map((s: any) => ({
-                    id: s.id,
-                    title: s.title,
-                    description: s.description || '',
-                    date: new Date(s.date).toISOString().slice(0, 16),
-                }));
-
-                // Ensure we always have exactly 2 seminars
-                while (loadedSeminars.length < 2) {
-                    loadedSeminars.push({ title: '', description: '', date: '' });
-                }
-
-                setSeminars(loadedSeminars.slice(0, 2));
-            }
-        }
-        getData();
+        fetchSeminars();
     }, [router]);
 
     const fetchSeminars = async () => {
         try {
             const response = await fetch('/api/seminars');
             const data = await response.json();
-
-            if (data.success && data.seminars.length > 0) {
-                const loadedSeminars = data.seminars.map((s: any) => ({
-                    id: s.id,
-                    title: s.title,
-                    description: s.description || '',
-                    date: new Date(s.date).toISOString().slice(0, 16),
-                }));
-
-                // Ensure we always have exactly 2 seminars
-                while (loadedSeminars.length < 2) {
-                    loadedSeminars.push({ title: '', description: '', date: '' });
-                }
-
-                setSeminars(loadedSeminars.slice(0, 2));
+            
+            if (data.success && data.data.length > 0) {
+                setId(data.data[0]._id);
+                setSeminars(data.data[0].seminars);
+                setLoading(false);
+            } else {
+                setLoading(false);
+                setMessage({ type: 'error', text: data.error || 'সেমিনার লোড করতে সমস্যা হয়েছে' });
             }
         } catch (error) {
             console.error('Error fetching seminars:', error);
-        } finally {
             setLoading(false);
+            setMessage({ type: 'error', text: 'সেমিনার লোড করতে সমস্যা হয়েছে' });
         }
     };
 
@@ -103,14 +77,13 @@ export default function SeminarPage() {
         setMessage(null);
 
         try {
-            const response = await fetch('/api/seminars', {
+            const response = await fetch(`/api/seminars?id=${id}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ seminars }),
             });
 
             const data = await response.json();
-            console.log(data);
             if (data.success) {
                 setMessage({ type: 'success', text: 'সেমিনার সফলভাবে সেভ হয়েছে!' });
                 fetchSeminars();
@@ -160,7 +133,7 @@ export default function SeminarPage() {
 
             {/* Seminar Cards */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-                {seminars.map((seminar, index) => (
+                { seminars.map((seminar, index) => (
                     <div
                         key={index}
                         className="bg-white rounded-xl shadow-md p-6 border border-gray-100"
