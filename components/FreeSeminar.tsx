@@ -12,6 +12,12 @@ interface SeminarCardProps {
   onJoinClick: () => void;
 }
 
+interface Seminar {
+  title: string;
+  date: string;
+  description: string;
+}
+
 const SeminarCard = ({ title, date, description, onJoinClick }: SeminarCardProps) => {
   const formatDateTime = (date: string | Date) =>
     new Date(date).toLocaleString("en-US", {
@@ -59,13 +65,13 @@ const SeminarCard = ({ title, date, description, onJoinClick }: SeminarCardProps
 const FreeSeminar = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedSeminar, setSelectedSeminar] = useState("");
-  const [seminars, setSeminar] = useState([]);
+  const [seminars, setSeminar] = useState<Seminar[]>([]);
 
   useEffect(() => {
     const fetchSeminar = async () => {
       const response = await fetch("/api/seminars");
       const data = await response.json();
-      setSeminar(data.data[0].seminars);
+      setSeminar(data.data[0].seminars as Seminar[]);
     };
     fetchSeminar();
   }, []);
