@@ -1,18 +1,17 @@
 "use client";
 
-import React, { useState, Suspense } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { Search, GraduationCap } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
-import studentsData from "@/data/students.json";
 
 interface Student {
     id: string;
     name: string;
     registrationNumber: string;
     roll: string;
-    studentImageUrl: string;
-    certificateImageUrl: string;
+    studentImageUrl?: string;
+    certificateImageUrl?: string;
 }
 
 function CertificationPageContent() {
@@ -20,16 +19,58 @@ function CertificationPageContent() {
     const rollParam = searchParams.get('roll');
 
     const [query, setQuery] = useState(rollParam || "");
-    const students: Student[] = studentsData.students;
+    const [students, setStudents] = useState<Student[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        const fetchCertificates = async () => {
+            try {
+                const res = await fetch('/api/certificates');
+                if (!res.ok) {
+                    let errMsg = 'সার্ভার থেকে সার্টিফিকেট লোড করা যাচ্ছে না';
+                    try {
+                        const err = await res.json();
+                        errMsg = err?.error || errMsg;
+                    } catch {
+                        // ignore parse errors
+                    }
+                    setError(errMsg);
+                    setStudents([]);
+                    return;
+                }
+
+                const data = await res.json();
+                if (data.success && Array.isArray(data.certificates)) {
+                    const normalized = data.certificates.map((c: unknown) => {
+                        const obj = c as { _id?: string; id?: string } & Record<string, unknown>;
+                        return { id: obj._id || obj.id, ...obj } as unknown as Student;
+                    });
+                    setStudents(normalized);
+                } else {
+                    setError('কোনো সার্টিফিকেট পাওয়া যায়নি');
+                    setStudents([]);
+                }
+            } catch (err) {
+                console.error('Error fetching certificates:', err);
+                setError('কনেকশনে সমস্যা হয়েছে');
+                setStudents([]);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchCertificates();
+    }, []);
 
     // Filter students based on search query
     const filteredStudents = students.filter((student) => {
         if (!query.trim()) return true;
         const searchTerm = query.toLowerCase().trim();
         return (
-            student.name.toLowerCase().includes(searchTerm) ||
-            student.roll.toLowerCase().includes(searchTerm) ||
-            student.registrationNumber.toLowerCase().includes(searchTerm)
+            (student.name || '').toLowerCase().includes(searchTerm) ||
+            (student.roll || '').toLowerCase().includes(searchTerm) ||
+            (student.registrationNumber || '').toLowerCase().includes(searchTerm)
         );
     });
 
@@ -72,7 +113,15 @@ function CertificationPageContent() {
                 </div>
 
                 {/* Student Cards Grid */}
-                {filteredStudents.length > 0 ? (
+                {loading ? (
+                    <div className="text-center py-12">
+                        <div className="text-gray-600">Loading certificates...</div>
+                    </div>
+                ) : error ? (
+                    <div className="text-center py-12">
+                        <p className="text-red-600">{error}</p>
+                    </div>
+                ) : filteredStudents.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {filteredStudents.map((student) => (
                             <div
@@ -83,7 +132,7 @@ function CertificationPageContent() {
                                 <div className="p-4 border-b border-gray-100">
                                     <div className="flex items-center gap-3 mb-3">
                                         {/* Student Image */}
-                                        <div className="relative w-16 h-16 rounded-full overflow-hidden border-2 border-purple-200 flex-shrink-0">
+                                        <div className="relative w-16 h-16 rounded-full overflow-hidden border-2 border-purple-200 shrink-0">
                                             <Image
                                                 src={student.studentImageUrl || "/images/profile.jpg"}
                                                 alt={student.name}

@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { FileText, Save, Trash2, Edit, AlertCircle, CheckCircle2, Award } from 'lucide-react';
 
 interface Result {
-    id?: number;
+    id?: string;
     name: string;
     roll: string;
     result: string;
@@ -19,7 +19,7 @@ export default function ResultsPage() {
     const [saving, setSaving] = useState(false);
     const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
     const [results, setResults] = useState<Result[]>([]);
-    const [editingId, setEditingId] = useState<number | null>(null);
+    const [editingId, setEditingId] = useState<string | null>(null);
 
     const [formData, setFormData] = useState<Result>({
         name: '',
@@ -43,11 +43,24 @@ export default function ResultsPage() {
             const response = await fetch('/api/results');
             const data = await response.json();
 
-            if (data.success) {
-                setResults(data.results);
+            if (data.success && Array.isArray(data.results)) {
+                const normalized = data.results.map((r: unknown) => {
+                    const obj = r as { _id?: string; certificate_url?: string } & Record<string, any>;
+                    return {
+                        id: obj._id || obj.id,
+                        name: obj.name,
+                        roll: obj.roll,
+                        result: obj.result,
+                        certificateUrl: obj.certificate_url || obj.certificateUrl || '',
+                    } as Result;
+                });
+                setResults(normalized);
+            } else {
+                setResults([]);
             }
         } catch (error) {
             console.error('Error fetching results:', error);
+            setResults([]);
         } finally {
             setLoading(false);
         }
@@ -112,7 +125,7 @@ export default function ResultsPage() {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    const handleDelete = async (id: number) => {
+    const handleDelete = async (id: string) => {
         if (!confirm('আপনি কি এই রেজাল্ট ডিলিট করতে চান?')) return;
 
         try {
@@ -245,7 +258,7 @@ export default function ResultsPage() {
                         <button
                             type="submit"
                             disabled={saving}
-                            className="relative inline-flex items-center justify-center px-8 py-3 text-white font-semibold rounded-lg overflow-hidden group shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 bg-gradient-to-r from-purple-600 via-purple-700 to-purple-800 hover:from-purple-700 hover:via-purple-800 hover:to-purple-900 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="relative inline-flex items-center justify-center px-8 py-3 text-white font-semibold rounded-lg overflow-hidden group shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 bg-linear-to-r from-purple-600 via-purple-700 to-purple-800 hover:from-purple-700 hover:via-purple-800 hover:to-purple-900 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             <span className="relative z-10 flex items-center gap-2">
                                 <Save size={18} />

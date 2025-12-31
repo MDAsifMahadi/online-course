@@ -3,13 +3,11 @@
 import React, { useState, useEffect, Suspense } from "react";
 import { Search, GraduationCap, AlertCircle, CheckCircle2 } from "lucide-react";
 import { useSearchParams } from "next/navigation";
-import resultsData from "@/data/results.json";
-
 interface Result {
     name: string;
     roll: string;
     result: string;
-    certificate_url: string;
+    certificate_url?: string;
 }
 
 function ResultPageContent() {
@@ -19,21 +17,66 @@ function ResultPageContent() {
     const [query, setQuery] = useState("");
     const [result, setResult] = useState<Result | null>(null);
     const [hasSearched, setHasSearched] = useState(false);
+    const [allResults, setAllResults] = useState<Result[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        const fetchResults = async () => {
+            try {
+                const res = await fetch('/api/results');
+                if (!res.ok) {
+                    let errMsg = 'সার্ভার থেকে রেজাল্ট লোড করা যাচ্ছে না';
+                    try {
+                        const err = await res.json();
+                        errMsg = err?.error || errMsg;
+                    } catch {
+                        // ignore
+                    }
+                    setError(errMsg);
+                    setAllResults([]);
+                    return;
+                }
+
+                const data = await res.json();
+                if (data.success && Array.isArray(data.results)) {
+                    const normalized = data.results.map((r: unknown) => {
+                        const obj = r as { certificate_url?: string } & Record<string, any>;
+                        return {
+                            ...obj,
+                            certificate_url: obj.certificate_url || obj.certificateUrl || '',
+                        } as Result;
+                    });
+                    setAllResults(normalized);
+                } else {
+                    setAllResults([]);
+                }
+            } catch (err) {
+                console.error('Error fetching results:', err);
+                setError('কনেকশনে সমস্যা হয়েছে');
+                setAllResults([]);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchResults();
+    }, []);
 
     useEffect(() => {
         if (rollParam) {
             setQuery(rollParam);
-            const foundResult = resultsData.find((r) => r.roll === rollParam.trim());
+            const foundResult = allResults.find((r) => r.roll === rollParam.trim());
             setResult(foundResult || null);
             setHasSearched(true);
         }
-    }, [rollParam]);
+    }, [rollParam, allResults]);
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
         if (!query.trim()) return;
 
-        const foundResult = resultsData.find((r) => r.roll === query.trim());
+        const foundResult = allResults.find((r) => r.roll === query.trim());
         setResult(foundResult || null);
         setHasSearched(true);
     };
@@ -92,7 +135,15 @@ function ResultPageContent() {
 
                 {hasSearched && (
                     <div className="mt-8 transition-all duration-300 ease-in-out">
-                        {result ? (
+                        {loading ? (
+                            <div className="text-center py-8">
+                                <div className="text-gray-600">Loading result...</div>
+                            </div>
+                        ) : error ? (
+                            <div className="text-center py-8">
+                                <p className="text-red-600">{error}</p>
+                            </div>
+                        ) : result ? (
                             <div className="bg-white overflow-hidden shadow-xl rounded-2xl border border-gray-100">
                                 <div className="bg-green-50 px-6 py-4 border-b border-green-100 flex items-center gap-2">
                                     <CheckCircle2 className="h-5 w-5 text-green-600" />
@@ -141,7 +192,7 @@ function ResultPageContent() {
                             </div>
                         ) : (
                             <div className="rounded-xl bg-red-50 p-4 border border-red-100 flex items-start">
-                                <div className="flex-shrink-0">
+                                <div className="shrink-0">
                                     <AlertCircle className="h-5 w-5 text-red-400" aria-hidden="true" />
                                 </div>
                                 <div className="ml-3">

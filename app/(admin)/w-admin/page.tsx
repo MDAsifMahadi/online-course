@@ -22,12 +22,48 @@ export default function AdminDashboard() {
         return null;
     }
 
-    // Mock statistics - these will be replaced with real data from API later
+    // Load statistics from server
+    const [counts, setCounts] = useState({ enrollments: '—', messages: '—', results: '—', seminars: '—' });
+    const [loadingStats, setLoadingStats] = useState(true);
+
+    useEffect(() => {
+        if (!isAuthenticated) return;
+        let mounted = true;
+
+        async function fetchStats() {
+            setLoadingStats(true);
+            try {
+                const [enrRes, msgRes, resRes, semRes] = await Promise.all([
+                    fetch('/api/enrollments').then(r => r.json()),
+                    fetch('/api/messages').then(r => r.json()),
+                    fetch('/api/results').then(r => r.json()),
+                    fetch('/api/seminars').then(r => r.json()),
+                ]);
+
+                if (!mounted) return;
+
+                setCounts({
+                    enrollments: Array.isArray(enrRes.enrollments) ? String(enrRes.enrollments.length) : '0',
+                    messages: Array.isArray(msgRes.messages) ? String(msgRes.messages.length) : '0',
+                    results: Array.isArray(resRes.results) ? String(resRes.results.length) : '0',
+                    seminars: Array.isArray(semRes.data) ? String(semRes.data.length) : String((semRes.seminars || []).length),
+                });
+            } catch (err) {
+                console.error('Error fetching admin stats:', err);
+            } finally {
+                if (mounted) setLoadingStats(false);
+            }
+        }
+
+        fetchStats();
+        return () => { mounted = false; };
+    }, [isAuthenticated]);
+
     const stats = [
         {
             icon: Users,
             label: 'Total Enrollments',
-            value: '0',
+            value: loadingStats ? 'Loading...' : counts.enrollments,
             color: 'bg-blue-500',
             lightColor: 'bg-blue-50',
             textColor: 'text-blue-600'
@@ -35,7 +71,7 @@ export default function AdminDashboard() {
         {
             icon: MessageSquare,
             label: 'New Messages',
-            value: '0',
+            value: loadingStats ? 'Loading...' : counts.messages,
             color: 'bg-green-500',
             lightColor: 'bg-green-50',
             textColor: 'text-green-600'
@@ -43,7 +79,7 @@ export default function AdminDashboard() {
         {
             icon: FileText,
             label: 'Student Results',
-            value: '0',
+            value: loadingStats ? 'Loading...' : counts.results,
             color: 'bg-purple-500',
             lightColor: 'bg-purple-50',
             textColor: 'text-purple-600'
@@ -51,7 +87,7 @@ export default function AdminDashboard() {
         {
             icon: Calendar,
             label: 'Upcoming Seminars',
-            value: '0',
+            value: loadingStats ? 'Loading...' : counts.seminars,
             color: 'bg-orange-500',
             lightColor: 'bg-orange-50',
             textColor: 'text-orange-600'

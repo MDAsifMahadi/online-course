@@ -1,6 +1,6 @@
 "use client";
 
-import { Phone, Mail, Send, UserCircle2 } from "lucide-react";
+import { Phone, Mail, Send, UserCircle2, Upload, Image as ImageIcon } from "lucide-react";
 import { useState } from "react";
 
 const EnrollPage = () => {
@@ -8,21 +8,84 @@ const EnrollPage = () => {
         name: "",
         phone: "",
         email: "",
+        photo: null as File | null,
+        nidPhoto: null as File | null,
     });
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+    const [nidPreview, setNidPreview] = useState<string | null>(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        // Form submission logic will be added later
-        console.log("Form submitted:", formData);
-        alert("আপনার তথ্য সফলভাবে জমা হয়েছে! আমরা শীঘ্রই আপনার সাথে যোগাযোগ করব।");
-        setFormData({ name: "", phone: "", email: "" });
+        
+        // Validate required fields
+        if (!formData.name || !formData.phone || !formData.photo || !formData.nidPhoto) {
+            alert("অনুগ্রহ করে সব প্রয়োজনীয় তথ্য প্রদান করুন");
+            return;
+        }
+
+        setIsSubmitting(true);
+
+        try {
+            const submitFormData = new FormData();
+            submitFormData.append("name", formData.name);
+            submitFormData.append("phone", formData.phone);
+            if (formData.email) {
+                submitFormData.append("email", formData.email);
+            }
+            submitFormData.append("photo", formData.photo);
+            submitFormData.append("nidPhoto", formData.nidPhoto);
+
+            const response = await fetch("/api/enrollments", {
+                method: "POST",
+                body: submitFormData,
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                alert(data.message || "আপনার তথ্য সফলভাবে জমা হয়েছে! আমরা শীঘ্রই আপনার সাথে যোগাযোগ করব।");
+                setFormData({ name: "", phone: "", email: "", photo: null, nidPhoto: null });
+                setPhotoPreview(null);
+                setNidPreview(null);
+            } else {
+                alert(data.error || "কিছু সমস্যা হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।");
+            }
+        } catch (error) {
+            console.error("Error submitting form:", error);
+            alert("কিছু সমস্যা হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।");
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value,
-        });
+        if (e.target.type === "file") {
+            const file = e.target.files?.[0];
+            if (file) {
+                if (e.target.name === "photo") {
+                    setFormData({ ...formData, photo: file });
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                        setPhotoPreview(reader.result as string);
+                    };
+                    reader.readAsDataURL(file);
+                } else if (e.target.name === "nidPhoto") {
+                    setFormData({ ...formData, nidPhoto: file });
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                        setNidPreview(reader.result as string);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
+        } else {
+            setFormData({
+                ...formData,
+                [e.target.name]: e.target.value,
+            });
+        }
     };
 
     return (
@@ -98,7 +161,7 @@ const EnrollPage = () => {
                                     htmlFor="email"
                                     className="block text-sm font-semibold text-gray-700 mb-2"
                                 >
-                                    ইমেইল এড্রেস <span className="text-red-500">*</span>
+                                    ইমেইল এড্রেস 
                                 </label>
                                 <input
                                     type="email"
@@ -106,30 +169,133 @@ const EnrollPage = () => {
                                     name="email"
                                     value={formData.email}
                                     onChange={handleChange}
-                                    required
                                     placeholder="example@email.com"
                                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 hover:border-purple-300"
                                 />
                             </div>
 
+                            {/* Photo Upload */}
+                            <div>
+                                <label
+                                    htmlFor="photo"
+                                    className="block text-sm font-semibold text-gray-700 mb-2"
+                                >
+                                    নিজের ছবি <span className="text-red-500">*</span>
+                                </label>
+                                <div className="space-y-3">
+                                    <label
+                                        htmlFor="photo"
+                                        className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 hover:border-purple-400 transition-all duration-300"
+                                    >
+                                        {photoPreview ? (
+                                            <div className="relative w-full h-full rounded-lg overflow-hidden">
+                                                <img
+                                                    src={photoPreview}
+                                                    alt="Preview"
+                                                    className="w-full h-full object-cover"
+                                                />
+                                                <div className="absolute inset-0 bg-black/50 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
+                                                    <Upload className="text-white" size={24} />
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                                                <ImageIcon className="w-10 h-10 mb-2 text-gray-400" />
+                                                <p className="mb-2 text-sm text-gray-500">
+                                                    <span className="font-semibold">ক্লিক করুন</span> অথবা ছবি টেনে আনুন
+                                                </p>
+                                                <p className="text-xs text-gray-500">PNG, JPG, JPEG (MAX. 5MB)</p>
+                                            </div>
+                                        )}
+                                        <input
+                                            type="file"
+                                            id="photo"
+                                            name="photo"
+                                            accept="image/*"
+                                            onChange={handleChange}
+                                            required
+                                            className="hidden"
+                                        />
+                                    </label>
+                                </div>
+                            </div>
+
+                            {/* NID Card Photo Upload */}
+                            <div>
+                                <label
+                                    htmlFor="nidPhoto"
+                                    className="block text-sm font-semibold text-gray-700 mb-2"
+                                >
+                                    এনআইডি কার্ড এর ছবি <span className="text-red-500">*</span>
+                                </label>
+                                <div className="space-y-3">
+                                    <label
+                                        htmlFor="nidPhoto"
+                                        className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 hover:border-purple-400 transition-all duration-300"
+                                    >
+                                        {nidPreview ? (
+                                            <div className="relative w-full h-full rounded-lg overflow-hidden">
+                                                <img
+                                                    src={nidPreview}
+                                                    alt="NID Preview"
+                                                    className="w-full h-full object-cover"
+                                                />
+                                                <div className="absolute inset-0 bg-black/50 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
+                                                    <Upload className="text-white" size={24} />
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                                                <ImageIcon className="w-10 h-10 mb-2 text-gray-400" />
+                                                <p className="mb-2 text-sm text-gray-500">
+                                                    <span className="font-semibold">ক্লিক করুন</span> অথবা ছবি টেনে আনুন
+                                                </p>
+                                                <p className="text-xs text-gray-500">PNG, JPG, JPEG (MAX. 5MB)</p>
+                                            </div>
+                                        )}
+                                        <input
+                                            type="file"
+                                            id="nidPhoto"
+                                            name="nidPhoto"
+                                            accept="image/*"
+                                            onChange={handleChange}
+                                            required
+                                            className="hidden"
+                                        />
+                                    </label>
+                                </div>
+                            </div>
+
                             {/* Submit Button */}
                             <button
                                 type="submit"
-                                className="relative w-full inline-flex items-center justify-center px-8 py-4 text-white font-semibold rounded-lg overflow-hidden group shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 bg-gradient-to-r from-purple-600 via-purple-700 to-purple-800 hover:from-purple-700 hover:via-purple-800 hover:to-purple-900"
+                                disabled={isSubmitting}
+                                className="relative w-full inline-flex items-center justify-center px-8 py-4 text-white font-semibold rounded-lg overflow-hidden group shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 bg-gradient-to-r from-purple-600 via-purple-700 to-purple-800 hover:from-purple-700 hover:via-purple-800 hover:to-purple-900 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:transform-none"
                             >
                                 {/* Shimmer Effect */}
-                                <span
-                                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-shimmer"
-                                    style={{
-                                        width: "200%",
-                                        height: "200%",
-                                    }}
-                                />
+                                {!isSubmitting && (
+                                    <span
+                                        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-shimmer"
+                                        style={{
+                                            width: "200%",
+                                            height: "200%",
+                                        }}
+                                    />
+                                )}
 
                                 {/* Button Content */}
                                 <span className="relative z-10 flex items-center gap-2">
-                                    <Send size={20} />
-                                    ফর্ম জমা দিন
+                                    {isSubmitting ? (
+                                        <>
+                                            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                            জমা হচ্ছে...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Send size={20} />
+                                            ফর্ম জমা দিন
+                                        </>
+                                    )}
                                 </span>
                             </button>
                         </form>
@@ -176,17 +342,17 @@ const EnrollPage = () => {
                                     <div>
                                         <h3 className="font-semibold mb-1">ইমেইল</h3>
                                         <a
-                                            href="mailto:info@example.com"
+                                            href="mailto:info@valleyict.com"
                                             className="text-purple-100 hover:text-white transition-colors"
                                         >
-                                            info@example.com
+                                            info@valleyict.com
                                         </a>
                                         <br />
                                         <a
-                                            href="mailto:support@example.com"
+                                            href="mailto:support@valleyict.com"
                                             className="text-purple-100 hover:text-white transition-colors"
                                         >
-                                            support@example.com
+                                            support@valleyict.com
                                         </a>
                                     </div>
                                 </div>

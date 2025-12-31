@@ -30,6 +30,10 @@ export default function CertificationPage() {
         certificateImageUrl: '',
     });
 
+    // File state for certificate upload
+    const [certificateFile, setCertificateFile] = useState<File | null>(null);
+    const [certificatePreview, setCertificatePreview] = useState<string>('');
+
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (!token) {
@@ -42,11 +46,32 @@ export default function CertificationPage() {
 
     const fetchStudents = async () => {
         try {
-            // Import students data from JSON file
-            const studentsData = await import('@/data/students.json');
-            setStudents(studentsData.students || []);
+            const res = await fetch('/api/certificates');
+            if (!res.ok) {
+                let errMsg = 'সার্ভার থেকে সার্টিফিকেট লোড করা যাচ্ছে না';
+                try {
+                    const err = await res.json();
+                    errMsg = err?.error || errMsg;
+                } catch (_) {}
+                setMessage({ type: 'error', text: errMsg });
+                setStudents([]);
+                return;
+            }
+
+            const data = await res.json();
+            if (data.success && Array.isArray(data.certificates)) {
+                    const normalized = data.certificates.map((c: unknown) => {
+                        const obj = c as { _id?: string; id?: string } & Record<string, unknown>;
+                        return { id: obj._id || obj.id, ...obj } as unknown as Student;
+                    });
+                setStudents(normalized);
+            } else {
+                setMessage({ type: 'error', text: 'কোনো সার্টিফিকেট পাওয়া যায়নি' });
+                setStudents([]);
+            }
         } catch (error) {
             console.error('Error fetching students:', error);
+            setMessage({ type: 'error', text: 'কনেকশনে সমস্যা হয়েছে' });
             setStudents([]);
         } finally {
             setLoading(false);
@@ -61,8 +86,14 @@ export default function CertificationPage() {
         e.preventDefault();
 
         // Validation
-        if (!formData.name || !formData.roll || !formData.registrationNumber || !formData.studentImageUrl || !formData.certificateImageUrl) {
+        if (!formData.name || !formData.roll || !formData.registrationNumber || !formData.studentImageUrl) {
             setMessage({ type: 'error', text: 'সব ফিল্ড পূরণ করতে হবে' });
+            return;
+        }
+
+        // For new entries, certificate file required. For edits, allow keeping existing image.
+        if (!editingId && !certificateFile) {
+            setMessage({ type: 'error', text: 'সার্টিফিকেট ইমেজ আপলোড করুন' });
             return;
         }
 
@@ -70,41 +101,45 @@ export default function CertificationPage() {
         setMessage(null);
 
         try {
-            // TODO: Replace with actual API call
-            // For now, we'll simulate the save
             const url = '/api/certificates';
             const method = editingId ? 'PUT' : 'POST';
-            const body = editingId ? { ...formData, id: editingId } : { ...formData, id: `stu_${Date.now()}` };
+
+            const fd = new FormData();
+            fd.append('name', formData.name);
+            fd.append('registrationNumber', formData.registrationNumber);
+            fd.append('roll', formData.roll);
+            fd.append('studentImageUrl', formData.studentImageUrl);
+
+            if (certificateFile) {
+                fd.append('certificate', certificateFile);
+            }
+
+            if (editingId) fd.append('id', editingId);
 
             const response = await fetch(url, {
                 method,
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(body),
+                body: fd,
             });
 
-            // If API doesn't exist yet, just show success message
             if (!response.ok && response.status === 404) {
-                // Simulate success for now
-                setMessage({
-                    type: 'success',
-                    text: editingId ? 'সার্টিফিকেট আপডেট হয়েছে!' : 'সার্টিফিকেট যুক্ত হয়েছে!',
-                });
+                setMessage({ type: 'success', text: editingId ? 'সার্টিফিকেট আপডেট হয়েছে!' : 'সার্টিফিকেট যুক্ত হয়েছে!' });
                 setFormData({ name: '', registrationNumber: '', roll: '', studentImageUrl: '', certificateImageUrl: '' });
+                setCertificateFile(null);
+                setCertificatePreview('');
                 setEditingId(null);
-                // Add to local state for demo
                 if (editingId) {
                     setStudents(students.map(s => s.id === editingId ? { ...formData, id: editingId } : s));
                 } else {
-                    setStudents([...students, body as Student]);
+                    const newBody = { ...formData, id: `stu_${Date.now()}` } as Student;
+                    setStudents([...students, newBody]);
                 }
             } else {
                 const data = await response.json();
                 if (data.success) {
-                    setMessage({
-                        type: 'success',
-                        text: editingId ? 'সার্টিফিকেট আপডেট হয়েছে!' : 'সার্টিফিকেট যুক্ত হয়েছে!',
-                    });
+                    setMessage({ type: 'success', text: editingId ? 'সার্টিফিকেট আপডেট হয়েছে!' : 'সার্টিফিকেট যুক্ত হয়েছে!' });
                     setFormData({ name: '', registrationNumber: '', roll: '', studentImageUrl: '', certificateImageUrl: '' });
+                    setCertificateFile(null);
+                    setCertificatePreview('');
                     setEditingId(null);
                     fetchStudents();
                 } else {
@@ -128,6 +163,8 @@ export default function CertificationPage() {
             certificateImageUrl: student.certificateImageUrl,
         });
         setEditingId(student.id || null);
+        setCertificateFile(null);
+        setCertificatePreview(student.certificateImageUrl || '');
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
@@ -160,6 +197,8 @@ export default function CertificationPage() {
 
     const handleCancelEdit = () => {
         setFormData({ name: '', registrationNumber: '', roll: '', studentImageUrl: '', certificateImageUrl: '' });
+        setCertificateFile(null);
+        setCertificatePreview('');
         setEditingId(null);
     };
 
@@ -267,20 +306,68 @@ export default function CertificationPage() {
                         </div>
                     </div>
 
-                    {/* Certificate Image URL */}
+                    {/* Certificate Image Upload */}
                     <div className="md:col-span-2">
                         <label className="block text-sm font-semibold text-gray-700 mb-2">
-                            Certificate Image URL <span className="text-red-500">*</span>
+                            Certificate Image <span className="text-red-500">*</span>
                         </label>
-                        <div className="relative">
-                            <input
-                                type="text"
-                                value={formData.certificateImageUrl}
-                                onChange={(e) => handleInputChange('certificateImageUrl', e.target.value)}
-                                placeholder="https://example.com/certificate-image.jpg"
-                                className="w-full px-4 py-3 pl-10 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 hover:border-purple-300"
-                            />
-                            <ImageIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+
+                        <div className="flex items-center gap-4">
+                            <div className="relative flex-1">
+                                {/* Hidden file input for accessibility */}
+                                <input
+                                    id="certificate-file"
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                        const file = e.target.files?.[0] || null;
+                                        if (file) {
+                                            handleInputChange('certificateImageUrl', '');
+                                            setCertificateFile(file);
+                                            // show preview
+                                            const reader = new FileReader();
+                                            reader.onload = () => setCertificatePreview(reader.result as string);
+                                            reader.readAsDataURL(file);
+                                        } else {
+                                            setCertificateFile(null);
+                                            setCertificatePreview('');
+                                        }
+                                    }}
+                                    className="sr-only"
+                                />
+
+                                <label htmlFor="certificate-file" className="inline-flex items-center gap-3 px-4 py-2 bg-white border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
+                                    <ImageIcon className="text-purple-600" size={18} />
+                                    <span className="text-sm text-gray-700">{certificateFile ? certificateFile.name : (formData.certificateImageUrl ? 'Keep current image' : 'Choose certificate image')}</span>
+                                </label>
+
+                                {certificateFile ? (
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setCertificateFile(null);
+                                            setCertificatePreview('');
+                                        }}
+                                        className="ml-3 text-sm text-red-600 hover:underline"
+                                    >
+                                        Remove
+                                    </button>
+                                ) : null}
+
+                                <p className="text-xs text-gray-500 mt-2">Only images, max 5MB.</p>
+                            </div>
+
+                            <div className="w-32 h-20 bg-gray-50 rounded-lg flex items-center justify-center border border-gray-200 overflow-hidden">
+                                {certificatePreview ? (
+                                    // eslint-disable-next-line @next/next/no-img-element
+                                    <img src={certificatePreview} alt="preview" className="w-full h-full object-cover" />
+                                ) : formData.certificateImageUrl ? (
+                                    // eslint-disable-next-line @next/next/no-img-element
+                                    <img src={formData.certificateImageUrl} alt="certificate" className="w-full h-full object-cover" onError={(e) => (e.currentTarget.src = '/images/certificate-placeholder.jpg')} />
+                                ) : (
+                                    <span className="text-gray-400 text-xs">No image</span>
+                                )}
+                            </div>
                         </div>
                     </div>
 
@@ -289,7 +376,7 @@ export default function CertificationPage() {
                         <button
                             type="submit"
                             disabled={saving}
-                            className="relative inline-flex items-center justify-center px-8 py-3 text-white font-semibold rounded-lg overflow-hidden group shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 bg-gradient-to-r from-purple-600 via-purple-700 to-purple-800 hover:from-purple-700 hover:via-purple-800 hover:to-purple-900 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="relative inline-flex items-center justify-center px-8 py-3 text-white font-semibold rounded-lg overflow-hidden group shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 bg-linear-to-r from-purple-600 via-purple-700 to-purple-800 hover:from-purple-700 hover:via-purple-800 hover:to-purple-900 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             <span className="relative z-10 flex items-center gap-2">
                                 <Save size={18} />
@@ -338,6 +425,18 @@ export default function CertificationPage() {
                                         <span className="font-medium">Registration:</span> {student.registrationNumber}
                                     </p>
                                 </div>
+                                <div className="mb-3">
+                                    <div className="w-full h-40 bg-gray-50 rounded-lg overflow-hidden border border-gray-100 mb-3">
+                                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                                        <img
+                                            src={student.certificateImageUrl || '/images/certificate-placeholder.jpg'}
+                                            alt={`${student.name} certificate`}
+                                            className="w-full h-full object-cover"
+                                            onError={(e) => (e.currentTarget.src = '/images/certificate-placeholder.jpg')}
+                                        />
+                                    </div>
+                                </div>
+
                                 <div className="flex gap-2">
                                     <button
                                         onClick={() => handleEdit(student)}

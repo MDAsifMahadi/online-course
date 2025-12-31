@@ -2,6 +2,7 @@ export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { Message } from "@/app/lib/models/schema";
 import connectToDatabase from "@/app/lib/mongodb";
+import { requireAuth } from "@/app/lib/auth";
 
 export async function GET(request: NextRequest) {
     try {
@@ -42,6 +43,13 @@ export async function POST(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
     try {
+        // Require authentication
+        try {
+            requireAuth(request);
+        } catch (e) {
+            return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+        }
+
         await connectToDatabase();
         const { searchParams } = new URL(request.url);
         const _id = searchParams.get('_id');

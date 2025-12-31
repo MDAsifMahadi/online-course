@@ -2,6 +2,7 @@ export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { Seminar } from "@/app/lib/models/schema";
 import connectToDatabase from "@/app/lib/mongodb";
+import { requireAuth } from '@/app/lib/auth';
 
 
 export async function GET(request: NextRequest) {
@@ -17,6 +18,13 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
     try {
+        // Require authentication
+        try {
+            requireAuth(request);
+        } catch (e) {
+            return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+        }
+
         await connectToDatabase();
         const body = await request.json();
         const { seminars } = body;
