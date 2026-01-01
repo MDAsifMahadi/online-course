@@ -17,12 +17,7 @@ export default function AdminDashboard() {
         }
     }, [router]);
 
-    // Show nothing while checking
-    if (!isAuthenticated) {
-        return null;
-    }
-
-    // Load statistics from server
+    // Load statistics from server (hooks must be declared unconditionally before any early returns)
     const [counts, setCounts] = useState({ enrollments: '—', messages: '—', results: '—', seminars: '—' });
     const [loadingStats, setLoadingStats] = useState(true);
 
@@ -58,6 +53,11 @@ export default function AdminDashboard() {
         fetchStats();
         return () => { mounted = false; };
     }, [isAuthenticated]);
+
+    // Show nothing while checking
+    if (!isAuthenticated) {
+        return null;
+    }
 
     const stats = [
         {
@@ -117,7 +117,15 @@ export default function AdminDashboard() {
                                         {stat.label}
                                     </p>
                                     <p className="text-3xl font-bold text-gray-900">
-                                        {stat.value}
+                                        {loadingStats ? (
+                                            <span className="inline-flex items-center gap-2 text-sm opacity-80" aria-label="loading">
+                                                <span className={`${stat.textColor} inline-flex items-center justify-center`}>
+                                                    <span className="w-2 h-2 rounded-full bg-current animate-pulse" />
+                                                </span>
+                                            </span>
+                                        ) : (
+                                            stat.value
+                                        )}
                                     </p>
                                 </div>
                                 <div className={`${stat.lightColor} p-3 rounded-lg`}>

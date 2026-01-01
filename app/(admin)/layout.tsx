@@ -18,6 +18,8 @@ export const metadata: Metadata = {
   description: "Admin panel for managing Valley ICT website",
 };
 
+import BodyCleanup from '@/components/BodyCleanup';
+
 export default function AdminLayout({
   children,
 }: Readonly<{
@@ -26,8 +28,11 @@ export default function AdminLayout({
   return (
     <html lang="en">
       <body
+        suppressHydrationWarning
         className={`${geistSans.variable} ${geistMono.variable} antialiased `}
       >
+        {/* Client cleanup runs after mount to remove attributes injected by browser extensions */}
+        <BodyCleanup />
         {children}
       </body>
     </html>
