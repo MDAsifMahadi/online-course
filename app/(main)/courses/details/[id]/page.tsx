@@ -2,6 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 import data from "@/data/courses.json";
 import { notFound } from "next/navigation";
+import ReactMarkdown from "react-markdown";
+
 
 // Helper function to find a course by ID and include category
 const getCourse = (id: string) => {
@@ -92,7 +94,19 @@ export default async function CourseDetailsPage({ params }: { params: Promise<{ 
                         <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
                             <h3 className="text-2xl font-bold text-gray-900 mb-6">Description</h3>
                             <div className="prose prose-lg max-w-none text-gray-600 leading-relaxed text-justify">
-                                <p>{course.detail}</p>
+                                <ReactMarkdown
+    components={{
+      h1: ({node, ...props}) => <h1 className="text-4xl font-bold text-gray-900 my-4" {...props} />,
+      h2: ({node, ...props}) => <h2 className="text-3xl font-semibold text-gray-900 my-3" {...props} />,
+      h3: ({node, ...props}) => <h3 className="text-2xl font-medium text-gray-800 my-2" {...props} />,
+      p: ({node, ...props}) => <p className="mb-4" {...props} />,
+      li: ({node, ...props}) => <li className="ml-5 list-disc mb-2" {...props} />,
+      strong: ({node, ...props}) => <strong className="font-bold" {...props} />,
+      em: ({node, ...props}) => <em className="italic" {...props} />,
+    }}
+  >
+    {course.detail}
+  </ReactMarkdown>
                             </div>
                         </div>
 
