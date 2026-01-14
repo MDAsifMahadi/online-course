@@ -31,21 +31,33 @@ const Navbar = () => {
           <div className="flex flex-col md:flex-row justify-between items-center gap-2">
             {/* Contact Info */}
             <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600">
-              <a href="tel:+8801234567890" className="flex items-center gap-1 hover:text-purple-600 transition">
+              <a href="tel:+8801943665958" className="flex items-center gap-1 hover:text-purple-600 transition">
                 <Phone size={14} />
-                <span>+880 1234 567890</span>
+                <span>+880 1943-665958</span>
               </a>
-              <a href="mailto:info@example.com" className="flex items-center gap-1 hover:text-purple-600 transition">
+              <a href="mailto:valleyictbd24@gmail.com" className="flex items-center gap-1 hover:text-purple-600 transition">
                 <Mail size={14} />
-                <span>info@example.com</span>
+                <span>valleyictbd24@gmail.com</span>
               </a>
             </div>
 
             {/* Social Media & Login */}
             <div className="flex items-center gap-4">
+              {/* Online Admission Button */}
+              <div className="admission-button-wrapper animate-colorful-shadow">
+                <Link
+                  href="/courses/enroll"
+                  className="admission-button"
+                >
+                  <span>Online Admission</span>
+                </Link>
+              </div>
+
               {/* Social Media Icons */}
               <div className="flex items-center gap-3">
-                <a href="#" className="text-gray-600 hover:text-blue-600 transition" aria-label="Facebook">
+                <a href="https://www.facebook.com/share/1CFzBbGLtk/" 
+                target="_blank"
+                className="text-gray-600 hover:text-blue-600 transition" aria-label="Facebook">
                   <Facebook size={18} />
                 </a>
                 <a href="#" className="text-gray-600 hover:text-red-600 transition" aria-label="YouTube">
@@ -77,8 +89,8 @@ const Navbar = () => {
             {/* Logo - খালি রাখা হয়েছে পরবর্তীতে ছবি বসানোর জন্য */}
 
             <div className="flex items-center">
-              <Link href="/" className="flex items-center">
-                <Image src={logo} alt="Logo" width={100} height={100} />
+              <Link href="/" className="flex items-center mr-1">
+                <Image src={logo} alt="Logo" width={70} height={70} />
               </Link>
             </div>
 

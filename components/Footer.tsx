@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { MapPin, Phone, Mail, Facebook, Instagram, Twitter, Linkedin } from 'lucide-react';
-import profile from '@/images/profile.jpg';
+import profile from '@/images/profile.png';
 const Footer = () => {
     return (
         <footer className="bg-gray-900 text-gray-300 pt-12 pb-4 border-t border-gray-800">
@@ -18,15 +18,15 @@ const Footer = () => {
                         <div className="space-y-2">
                             <div className="flex items-center gap-2">
                                 <MapPin className="w-5 h-5 text-blue-500" />
-                                <span>123 Shop Street, Dhaka, Bangladesh</span>
+                                <span>Khagdohor Bazar Sadar Mymensingh</span>
                             </div>
                             <div className="flex items-center gap-2">
                                 <Phone className="w-5 h-5 text-blue-500" />
-                                <span>+880 1234-567890</span>
+                                <span>+880 1943-665958</span>
                             </div>
                             <div className="flex items-center gap-2">
                                 <Mail className="w-5 h-5 text-blue-500" />
-                                <span>contact@ourshop.com</span>
+                                <span>valleyictbd24@gmail.com</span>
                             </div>
                         </div>
                     </div>
@@ -67,16 +67,16 @@ const Footer = () => {
                                 />
                             </div>
                             <div>
-                                <h4 className="text-lg font-medium text-white">Md. Asif Mahadi</h4>
+                                <h4 className="text-lg font-medium text-white">Yaqub Al Mahir</h4>
                                 <span className="text-sm text-gray-400">Proprietor</span>
                             </div>
                         </div>
                         <p className="text-sm mb-6 max-w-xs leading-relaxed">
-                            "Dedicated to serving our community with integrity and quality since 2010."
+                            &quot;Dedicated to serving our community with integrity and quality since 2010.&quot;
                         </p>
 
                         <div className="flex gap-4">
-                            <Link href="https://www.facebook.com/mdasif.mahadi.7" target='_blank' className="hover:text-blue-500 transition-colors">
+                            <Link href="https://www.facebook.com/share/1CFzBbGLtk/" target='_blank' className="hover:text-blue-500 transition-colors">
                                 <Facebook className="w-6 h-6" />
                             </Link>
                             <Link href="#" className="hover:text-pink-500 transition-colors">

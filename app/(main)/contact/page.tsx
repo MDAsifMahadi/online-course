@@ -41,8 +41,7 @@ export default function ContactPage() {
                         </div>
                         <h3 className="text-xl font-bold text-gray-800 mb-3">Our Address</h3>
                         <p className="text-gray-600">
-                            Valley ICT, Level 4,<br />
-                            Dhanmondi, Dhaka-1209
+                            Khagdohor Bazar<br /> Sadar, Mymensingh
                         </p>
                     </div>
 
@@ -53,8 +52,7 @@ export default function ContactPage() {
                         </div>
                         <h3 className="text-xl font-bold text-gray-800 mb-3">Phone Number</h3>
                         <p className="text-gray-600">
-                            +880 1234 567890<br />
-                            +880 1987 654321
+                        +880 1943-665958 
                         </p>
                     </div>
 
@@ -65,8 +63,7 @@ export default function ContactPage() {
                         </div>
                         <h3 className="text-xl font-bold text-gray-800 mb-3">Email Address</h3>
                         <p className="text-gray-600">
-                            info@valleyict.com<br />
-                            support@valleyict.com
+                            valleyictbd24@gmail.com
                         </p>
                     </div>
                 </div>

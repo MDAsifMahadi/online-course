@@ -34,6 +34,10 @@ export default function CertificationPage() {
     const [certificateFile, setCertificateFile] = useState<File | null>(null);
     const [certificatePreview, setCertificatePreview] = useState<string>('');
 
+    // File state for student image upload
+    const [studentImageFile, setStudentImageFile] = useState<File | null>(null);
+    const [studentImagePreview, setStudentImagePreview] = useState<string>('');
+
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (!token) {
@@ -86,14 +90,14 @@ export default function CertificationPage() {
         e.preventDefault();
 
         // Validation
-        if (!formData.name || !formData.roll || !formData.registrationNumber || !formData.studentImageUrl) {
+        if (!formData.name || !formData.roll || !formData.registrationNumber) {
             setMessage({ type: 'error', text: 'সব ফিল্ড পূরণ করতে হবে' });
             return;
         }
 
-        // For new entries, certificate file required. For edits, allow keeping existing image.
-        if (!editingId && !certificateFile) {
-            setMessage({ type: 'error', text: 'সার্টিফিকেট ইমেজ আপলোড করুন' });
+        // For new entries, both images required. For edits, allow keeping existing images.
+        if (!editingId && (!certificateFile || !studentImageFile)) {
+            setMessage({ type: 'error', text: 'সার্টিফিকেট এবং ছাত্রের ছবি আপলোড করুন' });
             return;
         }
 
@@ -108,7 +112,12 @@ export default function CertificationPage() {
             fd.append('name', formData.name);
             fd.append('registrationNumber', formData.registrationNumber);
             fd.append('roll', formData.roll);
-            fd.append('studentImageUrl', formData.studentImageUrl);
+
+            if (studentImageFile) {
+                fd.append('studentImage', studentImageFile);
+            } else if (formData.studentImageUrl) {
+                fd.append('studentImageUrl', formData.studentImageUrl);
+            }
 
             if (certificateFile) {
                 fd.append('certificate', certificateFile);
@@ -140,6 +149,8 @@ export default function CertificationPage() {
                     setFormData({ name: '', registrationNumber: '', roll: '', studentImageUrl: '', certificateImageUrl: '' });
                     setCertificateFile(null);
                     setCertificatePreview('');
+                    setStudentImageFile(null);
+                    setStudentImagePreview('');
                     setEditingId(null);
                     fetchStudents();
                 } else {
@@ -165,6 +176,8 @@ export default function CertificationPage() {
         setEditingId(student.id || null);
         setCertificateFile(null);
         setCertificatePreview(student.certificateImageUrl || '');
+        setStudentImageFile(null);
+        setStudentImagePreview(student.studentImageUrl || '');
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
@@ -199,6 +212,8 @@ export default function CertificationPage() {
         setFormData({ name: '', registrationNumber: '', roll: '', studentImageUrl: '', certificateImageUrl: '' });
         setCertificateFile(null);
         setCertificatePreview('');
+        setStudentImageFile(null);
+        setStudentImagePreview('');
         setEditingId(null);
     };
 
@@ -289,20 +304,68 @@ export default function CertificationPage() {
                         />
                     </div>
 
-                    {/* Student Image URL */}
+                    {/* Student Image Upload */}
                     <div>
                         <label className="block text-sm font-semibold text-gray-700 mb-2">
-                            Student Image URL <span className="text-red-500">*</span>
+                            Student Image <span className="text-red-500">*</span>
                         </label>
-                        <div className="relative">
-                            <input
-                                type="text"
-                                value={formData.studentImageUrl}
-                                onChange={(e) => handleInputChange('studentImageUrl', e.target.value)}
-                                placeholder="https://example.com/student-image.jpg"
-                                className="w-full px-4 py-3 pl-10 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 hover:border-purple-300"
-                            />
-                            <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+
+                        <div className="flex items-center gap-4">
+                            <div className="relative flex-1">
+                                {/* Hidden file input for accessibility */}
+                                <input
+                                    id="student-image-file"
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                        const file = e.target.files?.[0] || null;
+                                        if (file) {
+                                            handleInputChange('studentImageUrl', '');
+                                            setStudentImageFile(file);
+                                            // show preview
+                                            const reader = new FileReader();
+                                            reader.onload = () => setStudentImagePreview(reader.result as string);
+                                            reader.readAsDataURL(file);
+                                        } else {
+                                            setStudentImageFile(null);
+                                            setStudentImagePreview('');
+                                        }
+                                    }}
+                                    className="sr-only"
+                                />
+
+                                <label htmlFor="student-image-file" className="inline-flex items-center gap-3 px-4 py-2 bg-white border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
+                                    <User className="text-purple-600" size={18} />
+                                    <span className="text-sm text-gray-700">{studentImageFile ? studentImageFile.name : (formData.studentImageUrl ? 'Keep current image' : 'Choose student image')}</span>
+                                </label>
+
+                                {studentImageFile ? (
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setStudentImageFile(null);
+                                            setStudentImagePreview('');
+                                        }}
+                                        className="ml-3 text-sm text-red-600 hover:underline"
+                                    >
+                                        Remove
+                                    </button>
+                                ) : null}
+
+                                <p className="text-xs text-gray-500 mt-2">Only images, max 5MB.</p>
+                            </div>
+
+                            <div className="w-32 h-20 bg-gray-50 rounded-lg flex items-center justify-center border border-gray-200 overflow-hidden">
+                                {studentImagePreview ? (
+                                    // eslint-disable-next-line @next/next/no-img-element
+                                    <img src={studentImagePreview} alt="preview" className="w-full h-full object-cover" />
+                                ) : formData.studentImageUrl ? (
+                                    // eslint-disable-next-line @next/next/no-img-element
+                                    <img src={formData.studentImageUrl} alt="student" className="w-full h-full object-cover" onError={(e) => (e.currentTarget.src = '/images/profile.jpg')} />
+                                ) : (
+                                    <span className="text-gray-400 text-xs">No image</span>
+                                )}
+                            </div>
                         </div>
                     </div>
 

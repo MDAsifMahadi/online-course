@@ -32,11 +32,16 @@ export async function POST(request: NextRequest) {
         const name = formData.get('name') as string;
         const registrationNumber = formData.get('registrationNumber') as string;
         const roll = formData.get('roll') as string;
+        const studentImageFile = formData.get('studentImage') as File | null;
         const studentImageUrl = (formData.get('studentImageUrl') as string) || '';
         const certificateFile = formData.get('certificate') as File | null;
 
         if (!name || !registrationNumber || !roll || !certificateFile) {
             return NextResponse.json({ success: false, error: 'সব প্রয়োজনীয় তথ্য প্রদান করুন' }, { status: 400 });
+        }
+
+        if (!studentImageFile && !studentImageUrl) {
+            return NextResponse.json({ success: false, error: 'ছাত্রের ছবি আপলোড করুন' }, { status: 400 });
         }
 
         // Validate certificate file
@@ -49,13 +54,33 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ success: false, error: 'ছবির সাইজ ৫MB এর বেশি হতে পারবে না' }, { status: 400 });
         }
 
-        // Upload to Cloudinary
+        // Upload certificate to Cloudinary
         let certUrl: string;
         try {
             certUrl = await uploadToCloudinary(certificateFile, 'certificates');
         } catch (uploadError) {
             console.error('Cloudinary upload error:', uploadError);
-            return NextResponse.json({ success: false, error: 'ছবি আপলোড করতে সমস্যা হয়েছে' }, { status: 500 });
+            return NextResponse.json({ success: false, error: 'সার্টিফিকেট ছবি আপলোড করতে সমস্যা হয়েছে' }, { status: 500 });
+        }
+
+        // Upload student image to Cloudinary if file provided
+        let finalStudentImageUrl = studentImageUrl;
+        if (studentImageFile) {
+            // Validate student image file
+            if (!studentImageFile.type.startsWith('image/')) {
+                return NextResponse.json({ success: false, error: 'শুধুমাত্র ছবি ফাইল আপলোড করা যাবে' }, { status: 400 });
+            }
+            const maxSize = 5 * 1024 * 1024; // 5MB
+            if (studentImageFile.size > maxSize) {
+                return NextResponse.json({ success: false, error: 'ছবির সাইজ ৫MB এর বেশি হতে পারবে না' }, { status: 400 });
+            }
+
+            try {
+                finalStudentImageUrl = await uploadToCloudinary(studentImageFile, 'certificates/students');
+            } catch (uploadError) {
+                console.error('Cloudinary upload error:', uploadError);
+                return NextResponse.json({ success: false, error: 'ছাত্রের ছবি আপলোড করতে সমস্যা হয়েছে' }, { status: 500 });
+            }
         }
 
         // Save to DB
@@ -63,7 +88,7 @@ export async function POST(request: NextRequest) {
             name,
             registrationNumber,
             roll,
-            studentImageUrl: studentImageUrl || undefined,
+            studentImageUrl: finalStudentImageUrl || undefined,
             certificateImageUrl: certUrl,
         });
 
@@ -85,6 +110,7 @@ export async function PUT(request: NextRequest) {
         const name = formData.get('name') as string;
         const registrationNumber = formData.get('registrationNumber') as string;
         const roll = formData.get('roll') as string;
+        const studentImageFile = formData.get('studentImage') as File | null;
         const studentImageUrl = (formData.get('studentImageUrl') as string) || '';
         const certificateFile = formData.get('certificate') as File | null;
 
@@ -112,14 +138,35 @@ export async function PUT(request: NextRequest) {
                 cert.certificateImageUrl = certUrl;
             } catch (uploadError) {
                 console.error('Cloudinary upload error:', uploadError);
-                return NextResponse.json({ success: false, error: 'ছবি আপলোড করতে সমস্যা হয়েছে' }, { status: 500 });
+                return NextResponse.json({ success: false, error: 'সার্টিফিকেট ছবি আপলোড করতে সমস্যা হয়েছে' }, { status: 500 });
             }
+        }
+
+        // If new student image uploaded, validate and upload
+        if (studentImageFile) {
+            if (!studentImageFile.type.startsWith('image/')) {
+                return NextResponse.json({ success: false, error: 'শুধুমাত্র ছবি ফাইল আপলোড করা যাবে' }, { status: 400 });
+            }
+            const maxSize = 5 * 1024 * 1024; // 5MB
+            if (studentImageFile.size > maxSize) {
+                return NextResponse.json({ success: false, error: 'ছবির সাইজ ৫MB এর বেশি হতে পারবে না' }, { status: 400 });
+            }
+
+            try {
+                const studentUrl = await uploadToCloudinary(studentImageFile, 'certificates/students');
+                cert.studentImageUrl = studentUrl;
+            } catch (uploadError) {
+                console.error('Cloudinary upload error:', uploadError);
+                return NextResponse.json({ success: false, error: 'ছাত্রের ছবি আপলোড করতে সমস্যা হয়েছে' }, { status: 500 });
+            }
+        } else if (studentImageUrl) {
+            // Keep existing URL if provided
+            cert.studentImageUrl = studentImageUrl;
         }
 
         cert.name = name;
         cert.registrationNumber = registrationNumber;
         cert.roll = roll;
-        cert.studentImageUrl = studentImageUrl || undefined;
 
         await cert.save();
 
