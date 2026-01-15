@@ -54,14 +54,38 @@ const Hero = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
           {/* Left Side - Content */}
           <div className="text-center lg:text-left">
+            {/* Organization Badge */}
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-purple-50 border border-purple-200 rounded-full mb-4 lg:mb-6">
+              <div className="w-2 h-2 bg-purple-600 rounded-full animate-pulse"></div>
+              <span className="text-sm font-semibold text-purple-700">
+                <span className="text-purple-600 font-bold">Valley ICT</span> in Bangladesh Since 1999
+              </span>
+            </div>
+
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 lg:mb-6 leading-tight">
-              <span className="text-purple-600">Best</span>{" "}
-              <span className="text-purple-600">IT Institute</span>{" "}
-              <span className="text-gray-900">In</span>{" "}
-              <span className="text-purple-600">Bangladesh</span>{" "}
-              <span className="text-gray-900">Since</span>{" "}
-              <span className="text-purple-600">1999</span>
+              <span className="text-purple-600">Valley</span>{" "}
+              <span className="text-purple-600">ICT</span>
             </h1>
+
+            {/* Course Tags */}
+            <div className="flex flex-wrap items-center gap-2 mb-4 lg:mb-6 justify-center lg:justify-start">
+              <span className="text-sm text-gray-600 font-medium">Offering:</span>
+              <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-semibold border border-purple-200">
+                Microsoft Word
+              </span>
+              <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-semibold border border-blue-200">
+                Graphics Design
+              </span>
+              <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-semibold border border-green-200">
+                Web Development
+              </span>
+              <span className="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-xs font-semibold border border-orange-200">
+                Digital Marketing
+              </span>
+              <span className="px-3 py-1 bg-pink-100 text-pink-700 rounded-full text-xs font-semibold border border-pink-200">
+                Data Entry
+              </span>
+            </div>
             
             {/* Typing Animation */}
             <div className="h-8 md:h-10 mb-4 lg:mb-6 flex items-center justify-center lg:justify-start">
