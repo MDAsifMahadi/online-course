@@ -19,25 +19,32 @@ const OurCourses = () => {
 
         {/* Course Categories */}
         <div>
-          {data.map((category) => (
-            <CourseCategorySection key={Math.random()} categoryName={category.category}>
-              {category.courses.map((course) => (
-                <CourseCard
-                  key={course.id}
-                  id={course.id}
-                  imageSrc={`/${course.imageSrc}`}
-                  title={course.title}
-                  duration={course.duration}
-                  rating={course.rating}
-                  reviews={course.reviews}
-                  students={course.students}
-                  originalPrice={course.originalPrice}
-                  discount={course.discount}
-                  discountedPrice={course.discountedPrice}
-                />
-              ))}
-            </CourseCategorySection>
-          ))}
+          {data.map((category, categoryIndex) => {
+            let courseIndex = 0;
+            return (
+              <CourseCategorySection key={category.id} categoryName={category.category}>
+                {category.courses.map((course) => {
+                  const currentIndex = courseIndex++;
+                  return (
+                    <CourseCard
+                      key={course.id}
+                      id={course.id}
+                      imageSrc={`/${course.imageSrc}`}
+                      title={course.title}
+                      duration={course.duration}
+                      rating={course.rating}
+                      reviews={course.reviews}
+                      students={course.students}
+                      originalPrice={course.originalPrice}
+                      discount={course.discount}
+                      discountedPrice={course.discountedPrice}
+                      index={currentIndex}
+                    />
+                  );
+                })}
+              </CourseCategorySection>
+            );
+          })}
 
           {/* <CourseCategorySection categoryName="Graphic Design">
             <CourseCard

@@ -1,7 +1,10 @@
+"use client";
+
 import Image, { StaticImageData } from "next/image";
 import Link from "next/link";
 import { Star } from "lucide-react";
 import courseCardImage from "@/public/courseCard1.png";
+import ScrollAnimation from "./ScrollAnimation";
 
 interface CourseCardProps {
   id: number;
@@ -14,6 +17,7 @@ interface CourseCardProps {
   discount?: number;
   discountedPrice?: string;
   imageSrc?: string | StaticImageData;
+  index?: number;
 }
 
 const CourseCard = ({
@@ -27,12 +31,19 @@ const CourseCard = ({
   discount = 50,
   discountedPrice = "৳7,500",
   imageSrc,
+  index = 0,
 }: CourseCardProps) => {
   // Default image from images folder
   const cardImage = imageSrc || courseCardImage;
 
   return (
-    <div className="group h-full flex flex-col rounded-2xl overflow-hidden bg-white shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
+    <ScrollAnimation
+      delay={index * 0.1}
+      duration={0.6}
+      direction="up"
+      className="h-full"
+    >
+      <div className="group h-full flex flex-col rounded-2xl overflow-hidden bg-white shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
       <Link href={`/courses/details/${id}`}>
         {/* Top Section - Gradient Background with Image */}
         <div className="relative h-48 bg-gradient-to-b from-blue-700 to-blue-400 overflow-hidden shrink-0">
@@ -111,7 +122,8 @@ const CourseCard = ({
           </div>
         </div>
       </Link>
-    </div>
+      </div>
+    </ScrollAnimation>
   );
 };
 

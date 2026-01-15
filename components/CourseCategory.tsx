@@ -18,13 +18,14 @@ const CourseCategory = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
 
           {
-            data.map((course) => (
+            data.map((course, index) => (
               <CourseCategoryCard
                 key={course.id}
                 id={course.id}
                 title={course.category}
                 imageSrc={course.imageSrc}
                 alt={course.category}
+                index={index}
               />
             ))
           }

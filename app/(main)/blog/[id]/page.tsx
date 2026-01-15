@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { ArrowLeft, Calendar, User, Clock } from 'lucide-react';
 import blogsData from '@/data/blogs.json';
 import { notFound } from 'next/navigation';
+import type { Metadata } from 'next';
 
 interface PageProps {
     params: Promise<{ id: string }>;
@@ -16,6 +17,61 @@ export async function generateStaticParams() {
 }
 
 export const dynamicParams = true; // Allow dynamic params if data changes
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+    const { id } = await params;
+    const blogId = parseInt(id);
+    const blog = blogsData.find((b) => b.id === blogId);
+
+    if (!blog) {
+        return {
+            title: 'Blog Not Found',
+            description: 'The requested blog post could not be found.',
+        };
+    }
+
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://valleyict.com';
+    const blogUrl = `${siteUrl}/blog/${id}`;
+    const description = blog.main_block.length > 160 
+        ? blog.main_block.substring(0, 157) + '...' 
+        : blog.main_block;
+
+    return {
+        title: blog.title,
+        description: description,
+        keywords: [
+            blog.title,
+            "IT Blog",
+            "Technology Blog",
+            "Tech News",
+            "Valley ICT Blog"
+        ],
+        openGraph: {
+            title: blog.title,
+            description: description,
+            url: blogUrl,
+            type: 'article',
+            images: [
+                {
+                    url: blog.image_url,
+                    width: 1200,
+                    height: 630,
+                    alt: blog.title,
+                },
+            ],
+            siteName: 'Valley ICT',
+        },
+        twitter: {
+            card: 'summary_large_image',
+            title: blog.title,
+            description: description,
+            images: [blog.image_url],
+        },
+        alternates: {
+            canonical: `/blog/${id}`,
+        },
+    };
+}
 
 export default async function BlogDetailPage({ params }: PageProps) {
     const { id } = await params;

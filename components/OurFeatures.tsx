@@ -1,14 +1,23 @@
+"use client";
+
 import { Headphones, Users, Award, BookOpen } from "lucide-react";
+import ScrollAnimation from "./ScrollAnimation";
 
 interface FeatureCardProps {
   icon: React.ReactNode;
   title: string;
   description: string;
+  index?: number;
 }
 
-const FeatureCard = ({ icon, title, description }: FeatureCardProps) => {
+const FeatureCard = ({ icon, title, description, index = 0 }: FeatureCardProps) => {
   return (
-    <div className="bg-white rounded-lg p-6 shadow-md hover:shadow-xl transition-shadow duration-300 border border-gray-100 text-center">
+    <ScrollAnimation
+      delay={index * 0.1}
+      duration={0.5}
+      direction="up"
+    >
+      <div className="bg-white rounded-lg p-6 shadow-md hover:shadow-xl transition-shadow duration-300 border border-gray-100 text-center">
       <div className="flex justify-center mb-4">
         <div className="p-4 bg-gradient-to-br from-purple-100 to-purple-50 rounded-full">
           {icon}
@@ -16,7 +25,8 @@ const FeatureCard = ({ icon, title, description }: FeatureCardProps) => {
       </div>
       <h3 className="text-xl font-bold text-gray-900 mb-2">{title}</h3>
       <p className="text-gray-600 text-sm leading-relaxed">{description}</p>
-    </div>
+      </div>
+    </ScrollAnimation>
   );
 };
 
@@ -65,6 +75,7 @@ const OurFeatures = () => {
               icon={feature.icon}
               title={feature.title}
               description={feature.description}
+              index={index}
             />
           ))}
         </div>

@@ -1,5 +1,43 @@
 import CourseCard from "@/components/CourseCard";
 import data from "@/data/courses.json";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "All Courses",
+  description: "Browse our extensive collection of professional IT courses including Graphics Design, Web Development, Digital Marketing, Data Entry, and Freelancing. Start your learning journey today with expert instructors and modern labs.",
+  keywords: [
+    "IT Courses Bangladesh",
+    "Graphics Design Course",
+    "Web Development Course",
+    "Digital Marketing Course",
+    "Data Entry Course",
+    "Freelancing Course",
+    "Professional IT Training",
+    "Online IT Courses"
+  ],
+  openGraph: {
+    title: "All Courses - Valley ICT",
+    description: "Browse our extensive collection of professional IT courses. Graphics Design, Web Development, Digital Marketing, Data Entry, and Freelancing courses available.",
+    url: "/courses",
+    images: [
+      {
+        url: "/images/hero.png",
+        width: 1200,
+        height: 630,
+        alt: "Valley ICT Courses",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "All Courses - Valley ICT",
+    description: "Browse our extensive collection of professional IT courses. Graphics Design, Web Development, Digital Marketing, and more.",
+    images: ["/images/hero.png"],
+  },
+  alternates: {
+    canonical: "/courses",
+  },
+};
 
 const CoursesPage = () => {
     return (
@@ -28,7 +66,7 @@ const CoursesPage = () => {
                             </div>
 
                             <div className="flex flex-wrap justify-center gap-6">
-                                {category.courses.map((course) => (
+                                {category.courses.map((course, courseIndex) => (
                                     <div key={course.id} className="w-full sm:w-[350px]">
                                         <CourseCard
                                             id={course.id}
@@ -41,6 +79,7 @@ const CoursesPage = () => {
                                             originalPrice={course.originalPrice}
                                             discount={course.discount}
                                             discountedPrice={course.discountedPrice}
+                                            index={courseIndex}
                                         />
                                     </div>
                                 ))}

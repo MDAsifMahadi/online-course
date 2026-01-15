@@ -1,12 +1,43 @@
 import React from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import { ArrowRight } from 'lucide-react';
 import blogsData from '@/data/blogs.json';
+import BlogCard from '@/components/BlogCard';
 
-export const metadata = {
-    title: 'Blog - Online Course',
-    description: 'Read our latest articles and news.',
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: 'Blog',
+    description: 'Stay updated with the latest trends in technology, education, and career development. Read our expert articles on AI, Blockchain, Web Development, Digital Marketing, and more.',
+    keywords: [
+        "IT Blog Bangladesh",
+        "Technology Blog",
+        "IT News",
+        "Tech Articles",
+        "Career Development",
+        "IT Education Blog",
+        "Technology Trends"
+    ],
+    openGraph: {
+        title: 'Blog - Valley ICT',
+        description: 'Stay updated with the latest trends in technology, education, and career development. Read our expert articles on AI, Blockchain, Web Development, and more.',
+        url: '/blog',
+        images: [
+            {
+                url: '/images/hero.png',
+                width: 1200,
+                height: 630,
+                alt: 'Valley ICT Blog',
+            },
+        ],
+    },
+    twitter: {
+        card: 'summary_large_image',
+        title: 'Blog - Valley ICT',
+        description: 'Stay updated with the latest trends in technology, education, and career development.',
+        images: ['/images/hero.png'],
+    },
+    alternates: {
+        canonical: '/blog',
+    },
 };
 
 export default function BlogPage() {
@@ -23,48 +54,15 @@ export default function BlogPage() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {blogsData.map((blog) => (
-                        <div
+                    {blogsData.map((blog, index) => (
+                        <BlogCard
                             key={blog.id}
-                            className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col h-full border border-gray-100"
-                        >
-                            <div className="relative h-56 w-full group overflow-hidden">
-                                {/* Using standard img for external URLs if Next/Image domain not configured, or configure generic loader if needed. 
-                     Assuming external images might not be configured in next.config.ts, but standard next/image is preferred.
-                     If it fails, user will notify. Using Next Image with unoptimized for now to be safe with external URLs if domain not allowed.
-                 */}
-                                <Image
-                                    src={blog.image_url}
-                                    alt={blog.title}
-                                    fill
-                                    className="object-cover group-hover:scale-105 transition-transform duration-500"
-                                    unoptimized // Simplest way to handle external URLs without config changes
-                                />
-                            </div>
-
-                            <div className="p-6 flex flex-col flex-grow">
-                                <div className="mb-4">
-                                    <h2 className="text-xl font-bold text-gray-900 mb-2 line-clamp-2 hover:text-purple-600 transition-colors">
-                                        <Link href={`/blog/${blog.id}`}>
-                                            {blog.title}
-                                        </Link>
-                                    </h2>
-                                    <p className="text-gray-600 text-sm line-clamp-3 leading-relaxed">
-                                        {blog.main_block}
-                                    </p>
-                                </div>
-
-                                <div className="mt-auto pt-4 border-t border-gray-100">
-                                    <Link
-                                        href={`/blog/${blog.id}`}
-                                        className="inline-flex items-center text-purple-600 font-semibold hover:text-purple-700 transition-colors group"
-                                    >
-                                        Read Full Story
-                                        <ArrowRight size={16} className="ml-2 transform group-hover:translate-x-1 transition-transform" />
-                                    </Link>
-                                </div>
-                            </div>
-                        </div>
+                            id={blog.id}
+                            title={blog.title}
+                            main_block={blog.main_block}
+                            image_url={blog.image_url}
+                            index={index}
+                        />
                     ))}
                 </div>
             </div>

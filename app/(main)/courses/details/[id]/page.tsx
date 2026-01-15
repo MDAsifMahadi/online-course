@@ -3,7 +3,7 @@ import Link from "next/link";
 import data from "@/data/courses.json";
 import { notFound } from "next/navigation";
 import ReactMarkdown from "react-markdown";
-
+import type { Metadata } from "next";
 
 // Helper function to find a course by ID and include category
 const getCourse = (id: string) => {
@@ -21,6 +21,69 @@ const getCourse = (id: string) => {
     }
     return null;
 };
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+    const { id } = await params;
+    const course = getCourse(id);
+
+    if (!course) {
+        return {
+            title: 'Course Not Found',
+            description: 'The requested course could not be found.',
+        };
+    }
+
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://valleyict.com';
+    const courseUrl = `${siteUrl}/courses/details/${id}`;
+    
+    // Create description from course detail (first 160 characters)
+    let description = `Learn ${course.title} at Valley ICT. Duration: ${course.duration}. Expert instructors, hands-on training, and career support.`;
+    if (course.detail) {
+        const plainText = course.detail.replace(/[#*`]/g, '').replace(/\n/g, ' ').trim();
+        if (plainText.length > 0) {
+            description = plainText.length > 160 ? plainText.substring(0, 157) + '...' : plainText;
+        }
+    }
+
+    const imageSrc = course.imageSrc ? `/${course.imageSrc}` : '/images/hero.png';
+
+    return {
+        title: course.title,
+        description: description,
+        keywords: [
+            course.title,
+            `${course.title} Course`,
+            course.category,
+            "IT Training",
+            "Professional Course",
+            "Valley ICT",
+            course.duration
+        ],
+        openGraph: {
+            title: `${course.title} - Valley ICT`,
+            description: description,
+            url: courseUrl,
+            type: 'website',
+            images: [
+                {
+                    url: imageSrc,
+                    width: 1200,
+                    height: 630,
+                    alt: course.title,
+                },
+            ],
+        },
+        twitter: {
+            card: 'summary_large_image',
+            title: `${course.title} - Valley ICT`,
+            description: description,
+            images: [imageSrc],
+        },
+        alternates: {
+            canonical: `/courses/details/${id}`,
+        },
+    };
+}
 
 export default async function CourseDetailsPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;

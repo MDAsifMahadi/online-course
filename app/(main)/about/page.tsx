@@ -1,4 +1,40 @@
 import Image from "next/image";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "About Us",
+  description: "Learn about Valley ICT - Bangladesh's premier IT training institute. Established to bridge the gap between education and industry demands, we provide top-tier technical education with expert instructors, modern labs, and career support.",
+  keywords: [
+    "About Valley ICT",
+    "IT Institute Bangladesh",
+    "Computer Training Center",
+    "IT Education Bangladesh",
+    "Valley ICT History",
+    "IT Training Institute"
+  ],
+  openGraph: {
+    title: "About Us - Valley ICT",
+    description: "Learn about Valley ICT - Bangladesh's premier IT training institute. Expert instructors, modern labs, and career support since 1999.",
+    url: "/about",
+    images: [
+      {
+        url: "/about-header.png",
+        width: 1200,
+        height: 630,
+        alt: "About Valley ICT",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "About Us - Valley ICT",
+    description: "Learn about Valley ICT - Bangladesh's premier IT training institute. Expert instructors, modern labs, and career support.",
+    images: ["/about-header.png"],
+  },
+  alternates: {
+    canonical: "/about",
+  },
+};
 
 export default function AboutPage() {
     return (

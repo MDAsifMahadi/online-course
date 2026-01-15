@@ -1,15 +1,22 @@
 "use client";
 
 import { User } from "lucide-react";
+import ScrollAnimation from "./ScrollAnimation";
 
 interface TestimonialCardProps {
   name: string;
   comment: string;
+  index?: number;
 }
 
-const TestimonialCard = ({ name, comment }: TestimonialCardProps) => {
+const TestimonialCard = ({ name, comment, index = 0 }: TestimonialCardProps) => {
   return (
-    <div className="bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow duration-300 border border-gray-100">
+    <ScrollAnimation
+      delay={index * 0.1}
+      duration={0.5}
+      direction="up"
+    >
+      <div className="bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow duration-300 border border-gray-100">
       {/* Avatar */}
       <div className="flex justify-center mb-4">
         <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center">
@@ -26,7 +33,8 @@ const TestimonialCard = ({ name, comment }: TestimonialCardProps) => {
       <p className="text-gray-600 text-sm leading-relaxed text-center">
         {comment}
       </p>
-    </div>
+      </div>
+    </ScrollAnimation>
   );
 };
 
@@ -70,6 +78,7 @@ const Testimonials = () => {
               key={index}
               name={testimonial.name}
               comment={testimonial.comment}
+              index={index}
             />
           ))}
         </div>

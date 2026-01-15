@@ -3,6 +3,7 @@
 import { Phone, Mail, Send, UserCircle2, Upload, Image as ImageIcon } from "lucide-react";
 import { useState } from "react";
 
+// Note: Metadata for client components is handled via layout.tsx
 const EnrollPage = () => {
     const [formData, setFormData] = useState({
         name: "",

@@ -4,12 +4,14 @@ import { useEffect, useState } from "react";
 import seminarImage from "@/images/seminar.jpg";
 import { Calendar } from "lucide-react";
 import SeminarFormModal from "./SeminarFormModal";
+import ScrollAnimation from "./ScrollAnimation";
 
 interface SeminarCardProps {
   title: string;
   date: string;
   description: string;
   onJoinClick: () => void;
+  index?: number;
 }
 
 interface Seminar {
@@ -18,7 +20,7 @@ interface Seminar {
   description: string;
 }
 
-const SeminarCard = ({ title, date, description, onJoinClick }: SeminarCardProps) => {
+const SeminarCard = ({ title, date, description, onJoinClick, index = 0 }: SeminarCardProps) => {
   const formatDateTime = (date: string | Date) =>
     new Date(date).toLocaleString("en-US", {
       month: "short",
@@ -30,7 +32,12 @@ const SeminarCard = ({ title, date, description, onJoinClick }: SeminarCardProps
     });
   const formatedDate = formatDateTime(date);
   return (
-    <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200 hover:shadow-lg transition-shadow duration-300">
+    <ScrollAnimation
+      delay={index * 0.15}
+      duration={0.6}
+      direction="right"
+    >
+      <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200 hover:shadow-lg transition-shadow duration-300">
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1">
           {/* Date */}
@@ -58,7 +65,8 @@ const SeminarCard = ({ title, date, description, onJoinClick }: SeminarCardProps
           </button>
         </div>
       </div>
-    </div>
+      </div>
+    </ScrollAnimation>
   );
 };
 
@@ -117,6 +125,7 @@ const FreeSeminar = () => {
                 date={seminar.date}
                 description={seminar.description}
                 onJoinClick={() => handleJoinClick(seminar.title)}
+                index={index}
               />
             ))}
           </div>
