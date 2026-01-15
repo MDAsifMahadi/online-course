@@ -49,19 +49,19 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
         <div className="bg-gray-100 border-b border-gray-200 py-4 px-4 pt-12">
           {/* Contact Info */}
           <div className="flex flex-col gap-3 mb-4">
-            <a href="tel:+8801234567890" className="flex items-center gap-2 text-sm text-gray-600 hover:text-purple-600 transition">
+            <a href="tel:+8801943665958" className="flex items-center gap-2 text-sm text-gray-600 hover:text-purple-600 transition">
               <Phone size={16} />
-              <span>+880 1234 567890</span>
+              <span>+880 1943-665958</span>
             </a>
-            <a href="mailto:info@example.com" className="flex items-center gap-2 text-sm text-gray-600 hover:text-purple-600 transition">
+            <a href="mailto:valleyictbd24@gmail.com" className="flex items-center gap-2 text-sm text-gray-600 hover:text-purple-600 transition">
               <Mail size={16} />
-              <span>info@example.com</span>
+              <span>valleyictbd24@gmail.com</span>
             </a>
           </div>
 
           {/* Social Media Icons */}
           <div className="flex items-center gap-3 pt-2 border-t border-gray-200">
-            <a href="#" className="text-gray-600 hover:text-blue-600 transition" aria-label="Facebook">
+            <a href="https://www.facebook.com/yaqubal.mahir.3" className="text-gray-600 hover:text-blue-600 transition" aria-label="Facebook">
               <Facebook size={20} />
             </a>
             <a href="#" className="text-gray-600 hover:text-red-600 transition" aria-label="YouTube">

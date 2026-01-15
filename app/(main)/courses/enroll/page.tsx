@@ -320,18 +320,12 @@ const EnrollPage = () => {
                                     <div>
                                         <h3 className="font-semibold mb-1">ফোন নাম্বার</h3>
                                         <a
-                                            href="tel:+8801234567890"
+                                            href="tel:+8801943665958"
                                             className="text-purple-100 hover:text-white transition-colors"
                                         >
-                                            +880 1234 567890
+                                            +880 1943-665958
                                         </a>
-                                        <br />
-                                        <a
-                                            href="tel:+8801987654321"
-                                            className="text-purple-100 hover:text-white transition-colors"
-                                        >
-                                            +880 1987 654321
-                                        </a>
+                                       
                                     </div>
                                 </div>
 
@@ -343,18 +337,12 @@ const EnrollPage = () => {
                                     <div>
                                         <h3 className="font-semibold mb-1">ইমেইল</h3>
                                         <a
-                                            href="mailto:info@valleyict.com"
+                                            href="mailto:valleyictbd24@gmail.com"
                                             className="text-purple-100 hover:text-white transition-colors"
                                         >
-                                            info@valleyict.com
+                                            valleyictbd24@gmail.com
                                         </a>
-                                        <br />
-                                        <a
-                                            href="mailto:support@valleyict.com"
-                                            className="text-purple-100 hover:text-white transition-colors"
-                                        >
-                                            support@valleyict.com
-                                        </a>
+                                        
                                     </div>
                                 </div>
                             </div>
