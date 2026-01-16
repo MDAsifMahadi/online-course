@@ -30,11 +30,22 @@ export async function POST(request: NextRequest) {
         const { seminars } = body;
         const { searchParams } = new URL(request.url);
         const id = searchParams.get("id");
-        const seminar = await Seminar.findById(id);
-        if (seminar._id) {
-            const res = await Seminar.findByIdAndUpdate(seminar._id, {seminars});
-            return NextResponse.json({ success: true, seminar: res }, { status: 200 });
+
+        // Check if id exists and is valid (not empty and valid ObjectId format)
+        if (id && id.trim() !== "" && /^[0-9a-fA-F]{24}$/.test(id)) {
+            try {
+                const seminar = await Seminar.findById(id);
+                if (seminar && seminar._id) {
+                    const res = await Seminar.findByIdAndUpdate(seminar._id, { seminars });
+                    return NextResponse.json({ success: true, seminar: res }, { status: 200 });
+                }
+            } catch (error) {
+                // If findById fails, continue to create new seminar
+                console.log('Error finding seminar:', error);
+            }
         }
+
+        // Create new seminar if id is not provided or invalid
         const newSeminar = new Seminar({ seminars });
         await newSeminar.save();
         return NextResponse.json({ success: true, seminar: newSeminar }, { status: 200 });
